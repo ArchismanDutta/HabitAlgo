@@ -13,6 +13,16 @@ import FocusView from './views/FocusView';
 import GridView from './views/GridView';
 import EnhancedAnalyticsView from './views/EnhancedAnalyticsView';
 
+// Gym Views
+import GymDashboard from './views/gym/GymDashboard';
+import ProgramsView from './views/gym/ProgramsView';
+import ActiveWorkoutView from './views/gym/ActiveWorkoutView';
+import ExerciseLibraryView from './views/gym/ExerciseLibraryView';
+import MetricsView from './views/gym/MetricsView';
+import SupplementsView from './views/gym/SupplementsView';
+import GymAnalyticsView from './views/gym/GymAnalyticsView';
+import GymCalendarView from './views/gym/GymCalendarView';
+
 // Motivational Components
 import MissedHabitsChecker from './components/motivational/MissedHabitsChecker';
 
@@ -51,6 +61,17 @@ function App() {
           <Route path="/analytics" element={<AnalyticsView />} />
           <Route path="/enhanced-analytics" element={<EnhancedAnalyticsView />} />
           <Route path="/focus" element={<FocusView />} />
+
+          {/* Gym Routes */}
+          <Route path="/gym" element={<GymDashboard />} />
+          <Route path="/gym/calendar" element={<GymCalendarView />} />
+          <Route path="/gym/programs" element={<ProgramsView />} />
+          <Route path="/gym/active-workout" element={<ActiveWorkoutView />} />
+          <Route path="/gym/exercises" element={<ExerciseLibraryView />} />
+          <Route path="/gym/metrics" element={<MetricsView />} />
+          <Route path="/gym/supplements" element={<SupplementsView />} />
+          <Route path="/gym/analytics" element={<GymAnalyticsView />} />
+
           <Route path="*" element={<Navigate to="/today" replace />} />
         </Routes>
         <Toaster position="top-center" richColors />

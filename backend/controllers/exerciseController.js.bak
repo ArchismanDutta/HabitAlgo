@@ -1,0 +1,139 @@
+import Exercise from '../models/Exercise.js';
+
+// Get all exercises (system + user's custom)
+export const getExercises = async (req, res) => {
+  try {
+    const { category, search } = req.query;
+
+    const query = {
+      $or: [
+        { isCustom: false }, // System exercises
+        { isCustom: true, userId: req.user?._id } // User's custom exercises
+      ]
+    };
+
+    if (category) {
+      query.category = category;
+    }
+
+    if (search) {
+      query.name = { $regex: search, $options: 'i' };
+    }
+
+    const exercises = await Exercise.find(query).sort({ category: 1, name: 1 });
+
+    res.json({
+      success: true,
+      data: exercises
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+// Get single exercise
+export const getExercise = async (req, res) => {
+  try {
+    const exercise = await Exercise.findById(req.params.id);
+
+    if (!exercise) {
+      return res.status(404).json({
+        success: false,
+        error: 'Exercise not found'
+      });
+    }
+
+    res.json({
+      success: true,
+      data: exercise
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+// Create custom exercise
+export const createExercise = async (req, res) => {
+  try {
+    const exercise = await Exercise.create({
+      ...req.body,
+      isCustom: true,
+      userId: req.user?._id
+    });
+
+    res.status(201).json({
+      success: true,
+      data: exercise
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+// Update custom exercise
+export const updateExercise = async (req, res) => {
+  try {
+    const exercise = await Exercise.findOne({
+      _id: req.params.id,
+      userId: req.user?._id,
+      isCustom: true
+    });
+
+    if (!exercise) {
+      return res.status(404).json({
+        success: false,
+        error: 'Exercise not found or not editable'
+      });
+    }
+
+    Object.assign(exercise, req.body);
+    await exercise.save();
+
+    res.json({
+      success: true,
+      data: exercise
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message
+    });
+  }
+};
+
+// Delete custom exercise
+export const deleteExercise = async (req, res) => {
+  try {
+    const exercise = await Exercise.findOneAndDelete({
+      _id: req.params.id,
+      userId: req.user?._id,
+      isCustom: true
+    });
+
+    if (!exercise) {
+      return res.status(404).json({
+        success: false,
+        error: 'Exercise not found or not deletable'
+      });
+    }
+
+    res.json({
+      success: true,
+      message: 'Exercise deleted'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+};

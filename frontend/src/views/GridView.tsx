@@ -72,41 +72,41 @@ export default function GridView() {
     }
 
     return (
-      <div key={weekNum} className="mb-6">
-        <h3 className="text-lg font-semibold mb-3 bg-secondary px-3 py-2 rounded">
+      <div key={weekNum} className="mb-4 xxs:mb-5 sm:mb-6">
+        <h3 className="text-sm xxs:text-base sm:text-lg font-semibold mb-2 xxs:mb-3 bg-secondary px-2 xxs:px-3 py-1.5 xxs:py-2 rounded">
           Week {weekNum}
         </h3>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto rounded-lg border -mx-3 xxs:-mx-2 sm:mx-0">
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b-2">
-                <th className="text-left p-2 bg-pink-100 dark:bg-pink-900 font-bold sticky left-0 z-10 border-r-2 border-pink-300 dark:border-pink-700">
+                <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold sticky left-0 z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm w-[28px] xxs:w-[36px] sm:w-[52px]">
                   #
                 </th>
-                <th className="text-left p-2 bg-pink-100 dark:bg-pink-900 font-bold min-w-[200px] max-w-[300px] sticky left-[52px] z-10 border-r-2 border-pink-300 dark:border-pink-700">
+                <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold min-w-[100px] xxs:min-w-[140px] sm:min-w-[180px] max-w-[140px] xxs:max-w-[200px] sm:max-w-[280px] sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm">
                   Habits
                 </th>
                 {daysInWeek.map(day => (
-                  <th key={day} className="text-center p-2 bg-muted min-w-[60px]">
-                    <div className="text-sm font-semibold">{day}</div>
-                    <div className="text-xs text-muted-foreground">{getDayOfWeek(day)}</div>
+                  <th key={day} className="text-center p-1 xxs:p-1.5 sm:p-2 bg-muted min-w-[44px] xxs:min-w-[50px] sm:min-w-[60px]">
+                    <div className="text-xs xxs:text-sm font-semibold">{day}</div>
+                    <div className="text-[10px] xxs:text-xs text-muted-foreground hidden xxs:block">{getDayOfWeek(day)}</div>
                   </th>
                 ))}
               </tr>
             </thead>
             <tbody>
               {habits.map((habit, index) => (
-                <tr key={habit._id} className="border-b hover:bg-accent/50">
-                  <td className="p-2 text-center font-semibold bg-background sticky left-0 z-10 border-r border-border">
+                <tr key={habit._id} className="border-b hover:bg-accent/50 transition-colors">
+                  <td className="p-1 xxs:p-1.5 sm:p-2 text-center font-semibold bg-background sticky left-0 z-10 border-r border-border text-[10px] xxs:text-xs sm:text-sm">
                     {index + 1}
                   </td>
-                  <td className="p-2 bg-background sticky left-[52px] z-10 border-r border-border">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">{habit.icon}</span>
-                      <div className="truncate max-w-[180px]">
-                        <div className="font-medium truncate">{habit.name}</div>
+                  <td className="p-1 xxs:p-1.5 sm:p-2 bg-background sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r border-border">
+                    <div className="flex items-center gap-1 xxs:gap-1.5 sm:gap-2">
+                      <span className="text-base xxs:text-lg sm:text-xl flex-shrink-0">{habit.icon}</span>
+                      <div className="truncate max-w-[80px] xxs:max-w-[120px] sm:max-w-[180px]">
+                        <div className="font-medium truncate text-[10px] xxs:text-xs sm:text-sm">{habit.name}</div>
                         {habit.type === 'numeric' && (
-                          <div className="text-xs text-muted-foreground truncate">
+                          <div className="text-[9px] xxs:text-[10px] sm:text-xs text-muted-foreground truncate">
                             Target: {habit.targetMonthly} {habit.numericConfig?.unit}
                           </div>
                         )}
@@ -116,17 +116,17 @@ export default function GridView() {
                   {daysInWeek.map(day => {
                     const completed = isCompleted(habit._id, day);
                     return (
-                      <td key={day} className="p-1 text-center">
+                      <td key={day} className="p-0.5 xxs:p-1 text-center">
                         <button
                           onClick={() => handleToggle(habit._id, day)}
-                          className={`w-10 h-10 rounded border-2 transition-all inline-flex items-center justify-center ${
+                          className={`w-9 h-9 xxs:w-10 xxs:h-10 rounded border-2 transition-all inline-flex items-center justify-center hover:scale-110 active:scale-95 ${
                             completed
                               ? 'bg-green-500 border-green-600 text-white'
                               : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-primary'
                           }`}
                           aria-label={`Mark ${habit.name} as ${completed ? 'incomplete' : 'complete'} for day ${day}`}
                         >
-                          {completed && <span className="text-lg font-bold">✓</span>}
+                          {completed && <span className="text-base xxs:text-lg font-bold">✓</span>}
                         </button>
                       </td>
                     );
@@ -142,34 +142,34 @@ export default function GridView() {
 
   const renderMonthView = () => {
     return (
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto rounded-lg border -mx-3 xxs:-mx-2 sm:mx-0">
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b-2">
-              <th className="text-left p-2 bg-pink-100 dark:bg-pink-900 font-bold sticky left-0 z-10 border-r-2 border-pink-300 dark:border-pink-700">
+              <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold sticky left-0 z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm w-[28px] xxs:w-[36px] sm:w-[52px]">
                 #
               </th>
-              <th className="text-left p-2 bg-pink-100 dark:bg-pink-900 font-bold min-w-[180px] max-w-[250px] sticky left-[52px] z-10 border-r-2 border-pink-300 dark:border-pink-700">
+              <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold min-w-[90px] xxs:min-w-[120px] sm:min-w-[160px] max-w-[120px] xxs:max-w-[180px] sm:max-w-[240px] sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm">
                 Habits
               </th>
               {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => (
-                <th key={day} className="text-center p-1 bg-muted min-w-[50px]">
-                  <div className="text-xs font-semibold">{day}</div>
-                  <div className="text-xs text-muted-foreground">{getDayOfWeek(day).slice(0, 3)}</div>
+                <th key={day} className="text-center p-0.5 xxs:p-1 bg-muted min-w-[36px] xxs:min-w-[42px] sm:min-w-[50px]">
+                  <div className="text-[10px] xxs:text-xs font-semibold">{day}</div>
+                  <div className="text-[9px] xxs:text-[10px] sm:text-xs text-muted-foreground hidden xs:block">{getDayOfWeek(day).slice(0, 3)}</div>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {habits.map((habit, index) => (
-              <tr key={habit._id} className="border-b hover:bg-accent/50">
-                <td className="p-2 text-center font-semibold bg-background sticky left-0 z-10 border-r border-border">
+              <tr key={habit._id} className="border-b hover:bg-accent/50 transition-colors">
+                <td className="p-1 xxs:p-1.5 sm:p-2 text-center font-semibold bg-background sticky left-0 z-10 border-r border-border text-[10px] xxs:text-xs sm:text-sm">
                   {index + 1}
                 </td>
-                <td className="p-2 bg-background sticky left-[52px] z-10 border-r border-border">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xl">{habit.icon}</span>
-                    <span className="font-medium truncate max-w-[150px]">{habit.name}</span>
+                <td className="p-1 xxs:p-1.5 sm:p-2 bg-background sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r border-border">
+                  <div className="flex items-center gap-1 xxs:gap-1.5 sm:gap-2">
+                    <span className="text-base xxs:text-lg sm:text-xl flex-shrink-0">{habit.icon}</span>
+                    <span className="font-medium truncate max-w-[70px] xxs:max-w-[100px] sm:max-w-[150px] text-[10px] xxs:text-xs sm:text-sm">{habit.name}</span>
                   </div>
                 </td>
                 {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
@@ -178,14 +178,14 @@ export default function GridView() {
                     <td key={day} className="p-0.5 text-center">
                       <button
                         onClick={() => handleToggle(habit._id, day)}
-                        className={`w-8 h-8 rounded border transition-all inline-flex items-center justify-center ${
+                        className={`w-7 h-7 xxs:w-8 xxs:h-8 rounded border transition-all inline-flex items-center justify-center hover:scale-110 active:scale-95 ${
                           completed
                             ? 'bg-green-500 border-green-600 text-white'
                             : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-primary'
                         }`}
                         aria-label={`Mark ${habit.name} as ${completed ? 'incomplete' : 'complete'} for day ${day}`}
                       >
-                        {completed && <span className="text-sm font-bold">✓</span>}
+                        {completed && <span className="text-xs xxs:text-sm font-bold">✓</span>}
                       </button>
                     </td>
                   );
@@ -199,24 +199,25 @@ export default function GridView() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-20 lg:pb-6">
       <Header />
 
-      <div className="container max-w-[1600px] mx-auto p-4 space-y-6">
+      <div className="container max-w-[1600px] mx-auto px-2 xxs:px-3 sm:px-4 py-3 xxs:py-4 sm:py-6 space-y-3 xxs:space-y-4 sm:space-y-6 pb-6">
         {/* Header */}
-        <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between flex-wrap gap-4">
-              <div className="flex items-center gap-4">
+        <Card className="transition-all hover:shadow-lg">
+          <CardHeader className="px-3 xxs:px-4 sm:px-6 py-3 xxs:py-4 sm:py-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 xxs:gap-4">
+              <div className="flex items-center gap-2 xxs:gap-3 sm:gap-4">
                 <Button
                   variant="outline"
                   size="icon"
                   onClick={() => navigateMonth('prev')}
+                  className="h-8 w-8 xxs:h-9 xxs:w-9 sm:h-10 sm:w-10 flex-shrink-0 transition-all hover:scale-110 active:scale-95"
                 >
-                  <ChevronLeft className="h-4 w-4" />
+                  <ChevronLeft className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 sm:h-5 sm:w-5" />
                 </Button>
 
-                <CardTitle className="text-2xl">
+                <CardTitle className="text-base xxs:text-lg sm:text-xl md:text-2xl whitespace-nowrap">
                   {getMonthName(selectedMonth)} {selectedYear}
                 </CardTitle>
 
@@ -224,21 +225,24 @@ export default function GridView() {
                   variant="outline"
                   size="icon"
                   onClick={() => navigateMonth('next')}
+                  className="h-8 w-8 xxs:h-9 xxs:w-9 sm:h-10 sm:w-10 flex-shrink-0 transition-all hover:scale-110 active:scale-95"
                 >
-                  <ChevronRight className="h-4 w-4" />
+                  <ChevronRight className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 sm:h-5 sm:w-5" />
                 </Button>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex gap-1.5 xxs:gap-2 w-full sm:w-auto">
                 <Button
                   variant={viewMode === 'week' ? 'default' : 'outline'}
                   onClick={() => setViewMode('week')}
+                  className="flex-1 sm:flex-none h-8 xxs:h-9 text-xs xxs:text-sm transition-all hover:scale-105 active:scale-95"
                 >
                   By Week
                 </Button>
                 <Button
                   variant={viewMode === 'month' ? 'default' : 'outline'}
                   onClick={() => setViewMode('month')}
+                  className="flex-1 sm:flex-none h-8 xxs:h-9 text-xs xxs:text-sm transition-all hover:scale-105 active:scale-95"
                 >
                   Full Month
                 </Button>
@@ -248,15 +252,15 @@ export default function GridView() {
         </Card>
 
         {/* Grid */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="bg-pink-100 dark:bg-pink-900 px-4 py-2 rounded">
+        <Card className="transition-all hover:shadow-lg">
+          <CardHeader className="px-3 xxs:px-4 sm:px-6 py-3 xxs:py-4 sm:py-6">
+            <CardTitle className="bg-pink-100 dark:bg-pink-900 px-3 xxs:px-4 py-1.5 xxs:py-2 rounded text-sm xxs:text-base sm:text-lg">
               Daily Habits
             </CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="px-2 xxs:px-3 sm:px-6 pb-3 xxs:pb-4 sm:pb-6">
             {habits.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
+              <div className="text-center py-8 xxs:py-10 sm:py-12 text-xs xxs:text-sm sm:text-base text-muted-foreground">
                 No habits yet. Create your first habit to get started!
               </div>
             ) : viewMode === 'week' ? (

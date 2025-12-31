@@ -1,0 +1,149 @@
+/* Mobile-first responsive styles for all devices */
+
+/* Ensure minimum touch target sizes (44x44px for iOS) */
+button,
+a,
+.clickable,
+input[type="checkbox"],
+input[type="radio"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Prevent horizontal scroll on mobile */
+html,
+body {
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Improve tap highlight on mobile */
+* {
+  -webkit-tap-highlight-color: rgba(99, 102, 241, 0.1);
+}
+
+/* Safe area insets for iPhone X+ notches */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+
+  .container {
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 640px) {
+  /* Reduce padding on mobile */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  /* Make cards full width on mobile */
+  .card {
+    border-radius: 0.5rem;
+  }
+
+  /* Improve button spacing */
+  button + button {
+    margin-left: 0.5rem;
+  }
+
+  /* Stack form elements vertically */
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Responsive text sizes */
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+  }
+
+  h3 {
+    font-size: 1.125rem;
+  }
+
+  /* Full width buttons on mobile */
+  .mobile-full-width {
+    width: 100%;
+  }
+}
+
+/* Tablet adjustments */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    max-width: 100%;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* Dialog/Modal mobile improvements */
+@media (max-width: 640px) {
+  [role="dialog"],
+  .dialog-content {
+    max-width: 95vw !important;
+    max-height: 90vh !important;
+    margin: 0.5rem;
+  }
+}
+
+/* Improve select/dropdown on mobile */
+select {
+  font-size: 16px;
+  padding: 0.75rem;
+}
+
+/* Improve input fields on mobile */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+textarea {
+  font-size: 16px;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+}
+
+/* Prevent zoom on input focus (iOS) */
+@supports (-webkit-touch-callout: none) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Better scrolling for mobile */
+.overflow-auto,
+.overflow-y-auto {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Touch-friendly checkboxes */
+input[type="checkbox"] {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+/* Improve spacing in lists on mobile */
+@media (max-width: 640px) {
+  .space-y-4 > * + * {
+    margin-top: 1rem;
+  }
+
+  .gap-4 {
+    gap: 0.75rem;
+  }
+}

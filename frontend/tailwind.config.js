@@ -14,6 +14,10 @@ export default {
       },
     },
     extend: {
+      screens: {
+        'xs': '475px',  // Extra small devices (small phones)
+        'xxs': '375px', // iPhone SE, small Android phones
+      },
       colors: {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

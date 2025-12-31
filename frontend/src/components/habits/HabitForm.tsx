@@ -148,34 +148,35 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{habit ? 'Edit Habit' : 'Create New Habit'}</DialogTitle>
-          <DialogDescription>
+      <DialogContent className="max-w-[95vw] xxs:max-w-[90vw] sm:max-w-xl md:max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader className="px-4 xxs:px-5 sm:px-6 pt-4 xxs:pt-5 sm:pt-6">
+          <DialogTitle className="text-lg xxs:text-xl sm:text-2xl">{habit ? 'Edit Habit' : 'Create New Habit'}</DialogTitle>
+          <DialogDescription className="text-xs xxs:text-sm">
             {habit
               ? 'Update your habit details, goals, and meaning below.'
               : 'Create a new habit with personalized goals and meaning.'}
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 xxs:space-y-4 px-4 xxs:px-5 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 xxs:gap-4">
             {/* Name */}
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="name">Habit Name *</Label>
+            <div className="space-y-1.5 xxs:space-y-2 md:col-span-2">
+              <Label htmlFor="name" className="text-xs xxs:text-sm">Habit Name *</Label>
               <Input
                 id="name"
                 placeholder="e.g., Morning Exercise"
                 {...register('name')}
+                className="h-9 xxs:h-10 text-sm xxs:text-base"
               />
               {errors.name && (
-                <p className="text-sm text-destructive">{errors.name.message}</p>
+                <p className="text-xs xxs:text-sm text-destructive">{errors.name.message}</p>
               )}
             </div>
 
             {/* Category */}
-            <div className="space-y-2">
-              <Label>Category</Label>
+            <div className="space-y-1.5 xxs:space-y-2">
+              <Label className="text-xs xxs:text-sm">Category</Label>
               <Select
                 value={watchCategory}
                 onValueChange={(value) => setValue('category', value as any)}
@@ -195,19 +196,20 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
 
             {/* Custom Category */}
             {watchCategory === 'Custom' && (
-              <div className="space-y-2">
-                <Label htmlFor="customCategory">Custom Category Name</Label>
+              <div className="space-y-1.5 xxs:space-y-2">
+                <Label htmlFor="customCategory" className="text-xs xxs:text-sm">Custom Category Name</Label>
                 <Input
                   id="customCategory"
                   placeholder="e.g., Social, Finance"
                   {...register('customCategory')}
+                  className="h-9 xxs:h-10 text-sm xxs:text-base"
                 />
               </div>
             )}
 
             {/* Type */}
-            <div className="space-y-2">
-              <Label>Tracking Type</Label>
+            <div className="space-y-1.5 xxs:space-y-2">
+              <Label className="text-xs xxs:text-sm">Tracking Type</Label>
               <Select
                 value={watchType}
                 onValueChange={(value) => setValue('type', value as any)}
@@ -228,8 +230,8 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
             {/* Numeric Unit */}
             {watchType === 'numeric' && (
               <>
-                <div className="space-y-2">
-                  <Label>Unit</Label>
+                <div className="space-y-1.5 xxs:space-y-2">
+                  <Label className="text-xs xxs:text-sm">Unit</Label>
                   <Select
                     value={watchNumericUnit}
                     onValueChange={(value) => setValue('numericUnit', value)}
@@ -248,12 +250,13 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
                 </div>
 
                 {watchNumericUnit === 'custom' && (
-                  <div className="space-y-2">
-                    <Label htmlFor="customUnit">Custom Unit</Label>
+                  <div className="space-y-1.5 xxs:space-y-2">
+                    <Label htmlFor="customUnit" className="text-xs xxs:text-sm">Custom Unit</Label>
                     <Input
                       id="customUnit"
                       placeholder="e.g., pages, glasses"
                       {...register('customUnit')}
+                      className="h-9 xxs:h-10 text-sm xxs:text-base"
                     />
                   </div>
                 )}
@@ -261,27 +264,28 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
             )}
 
             {/* Target */}
-            <div className="space-y-2 md:col-span-2">
-              <Label htmlFor="targetMonthly">Monthly Goal</Label>
+            <div className="space-y-1.5 xxs:space-y-2 md:col-span-2">
+              <Label htmlFor="targetMonthly" className="text-xs xxs:text-sm">Monthly Goal</Label>
               <Input
                 id="targetMonthly"
                 type="number"
                 min="0"
                 max="999"
                 {...register('targetMonthly')}
+                className="h-9 xxs:h-10 text-sm xxs:text-base"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] xxs:text-xs text-muted-foreground">
                 How many days/times per month do you aim for?
               </p>
             </div>
           </div>
 
           {/* ✨ WHY & IDENTITY SECTION */}
-          <div className="border-t pt-4 space-y-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Heart className="h-5 w-5 text-pink-500" />
-                <h3 className="font-semibold text-lg">Give it meaning (Optional)</h3>
+          <div className="border-t pt-3 xxs:pt-4 space-y-3 xxs:space-y-4">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 xxs:gap-2 min-w-0 flex-1">
+                <Heart className="h-4 w-4 xxs:h-5 xxs:w-5 text-pink-500 flex-shrink-0" />
+                <h3 className="font-semibold text-sm xxs:text-base sm:text-lg truncate">Give it meaning (Optional)</h3>
               </div>
               {!showMeaning && (
                 <Button
@@ -289,59 +293,62 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
                   variant="outline"
                   size="sm"
                   onClick={() => setShowMeaning(true)}
+                  className="h-8 xxs:h-9 text-xs xxs:text-sm flex-shrink-0"
                 >
-                  Add Why & Identity
+                  <span className="hidden xs:inline">Add Why & Identity</span>
+                  <span className="xs:hidden">Add</span>
                 </Button>
               )}
             </div>
 
             {showMeaning && (
-              <div className="space-y-4 bg-pink-50 dark:bg-pink-950/20 p-4 rounded-lg">
+              <div className="space-y-3 xxs:space-y-4 bg-pink-50 dark:bg-pink-950/20 p-3 xxs:p-4 rounded-lg">
                 {/* Why */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Lightbulb className="h-4 w-4 text-yellow-500" />
-                    <Label htmlFor="why">Why this matters to me</Label>
+                <div className="space-y-1.5 xxs:space-y-2">
+                  <div className="flex items-center gap-1.5 xxs:gap-2">
+                    <Lightbulb className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 text-yellow-500" />
+                    <Label htmlFor="why" className="text-xs xxs:text-sm">Why this matters to me</Label>
                   </div>
                   <Textarea
                     id="why"
                     placeholder="e.g., Exercise keeps me energized and helps me show up as my best self for my family. When I move my body, I think clearer and sleep better."
                     {...register('why')}
                     rows={3}
-                    className="resize-none"
+                    className="resize-none text-xs xxs:text-sm"
                   />
                   {errors.why && (
-                    <p className="text-sm text-destructive">{errors.why.message}</p>
+                    <p className="text-xs text-destructive">{errors.why.message}</p>
                   )}
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] xxs:text-xs text-muted-foreground">
                     Your personal reason for building this habit. Be specific and emotional.
                   </p>
                 </div>
 
                 {/* Identity Statement */}
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Heart className="h-4 w-4 text-pink-500" />
-                    <Label htmlFor="identityStatement">Who I'm becoming</Label>
+                <div className="space-y-1.5 xxs:space-y-2">
+                  <div className="flex items-center gap-1.5 xxs:gap-2">
+                    <Heart className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 text-pink-500" />
+                    <Label htmlFor="identityStatement" className="text-xs xxs:text-sm">Who I'm becoming</Label>
                   </div>
                   <Input
                     id="identityStatement"
                     placeholder='e.g., "I am someone who prioritizes my health daily"'
                     {...register('identityStatement')}
+                    className="h-9 xxs:h-10 text-sm xxs:text-base"
                   />
                   {errors.identityStatement && (
-                    <p className="text-sm text-destructive">
+                    <p className="text-xs text-destructive">
                       {errors.identityStatement.message}
                     </p>
                   )}
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-[10px] xxs:text-xs text-muted-foreground">
                     Frame it as "I am someone who..." This becomes part of your identity.
                   </p>
                 </div>
 
-                <div className="bg-yellow-50 dark:bg-yellow-950/20 p-3 rounded text-sm">
-                  <p className="font-medium mb-1">💡 Why this helps:</p>
-                  <p className="text-muted-foreground">
+                <div className="bg-yellow-50 dark:bg-yellow-950/20 p-2.5 xxs:p-3 rounded text-xs xxs:text-sm">
+                  <p className="font-medium mb-0.5 xxs:mb-1">💡 Why this helps:</p>
+                  <p className="text-muted-foreground leading-relaxed">
                     When you connect habits to <strong>meaning</strong> and{' '}
                     <strong>identity</strong>, you're 3x more likely to stick with them. Your
                     brain treats identity-based habits as non-negotiable.
@@ -352,18 +359,18 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
           </div>
 
           {/* Color & Icon Pickers */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 xxs:gap-4">
             {/* Color Picker */}
-            <div className="space-y-2">
-              <Label>Color</Label>
-              <div className="grid grid-cols-9 gap-2">
+            <div className="space-y-1.5 xxs:space-y-2">
+              <Label className="text-xs xxs:text-sm">Color</Label>
+              <div className="grid grid-cols-9 gap-1 xxs:gap-1.5 sm:gap-2">
                 {COLORS.map((color) => (
                   <button
                     key={color}
                     type="button"
                     onClick={() => setSelectedColor(color)}
-                    className={`h-8 w-8 rounded-full transition-transform ${
-                      selectedColor === color ? 'scale-125 ring-2 ring-offset-2 ring-primary' : ''
+                    className={`h-7 w-7 xxs:h-8 xxs:w-8 rounded-full transition-all hover:scale-110 active:scale-95 ${
+                      selectedColor === color ? 'scale-110 xxs:scale-125 ring-2 ring-offset-1 xxs:ring-offset-2 ring-primary' : ''
                     }`}
                     style={{ backgroundColor: color }}
                   />
@@ -372,15 +379,15 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
             </div>
 
             {/* Icon Picker */}
-            <div className="space-y-2">
-              <Label>Icon</Label>
-              <div className="grid grid-cols-10 gap-2">
+            <div className="space-y-1.5 xxs:space-y-2">
+              <Label className="text-xs xxs:text-sm">Icon</Label>
+              <div className="grid grid-cols-10 gap-1 xxs:gap-1.5 sm:gap-2">
                 {ICONS.map((icon) => (
                   <button
                     key={icon}
                     type="button"
                     onClick={() => setSelectedIcon(icon)}
-                    className={`text-2xl h-10 w-10 flex items-center justify-center rounded-md hover:bg-accent transition-colors ${
+                    className={`text-xl xxs:text-2xl h-8 w-8 xxs:h-9 xxs:w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-md hover:bg-accent transition-all hover:scale-110 active:scale-95 ${
                       selectedIcon === icon ? 'bg-accent ring-2 ring-primary' : ''
                     }`}
                   >
@@ -391,17 +398,17 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
             </div>
           </div>
 
-          <DialogFooter className="sm:justify-between">
+          <DialogFooter className="flex-col xxs:flex-row gap-2 sm:justify-between pt-2">
             {habit ? (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button
                     type="button"
                     variant="destructive"
-                    className="sm:mr-auto"
+                    className="w-full xxs:w-auto xxs:mr-auto h-9 xxs:h-10 text-sm xxs:text-base"
                     disabled={isDeleting}
                   >
-                    <Trash2 className="h-4 w-4 mr-2" />
+                    <Trash2 className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 mr-1.5 xxs:mr-2" />
                     Delete
                   </Button>
                 </AlertDialogTrigger>
@@ -425,17 +432,18 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
                 </AlertDialogContent>
               </AlertDialog>
             ) : (
-              <div />
+              <div className="hidden xxs:block" />
             )}
-            <div className="flex gap-2">
+            <div className="flex flex-col xxs:flex-row gap-2 w-full xxs:w-auto">
               <Button
                 type="button"
                 variant="outline"
                 onClick={() => onOpenChange(false)}
+                className="h-9 xxs:h-10 text-sm xxs:text-base"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button type="submit" disabled={isSubmitting} className="h-9 xxs:h-10 text-sm xxs:text-base">
                 {isSubmitting ? 'Saving...' : habit ? 'Update' : 'Create'}
               </Button>
             </div>

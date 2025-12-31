@@ -12,6 +12,7 @@ import logRoutes from './routes/logs.js';
 import analyticsRoutes from './routes/analytics.js';
 import settingsRoutes from './routes/settings.js';
 import syncRoutes from './routes/sync.js';
+import gymRoutes from './routes/gym.js';
 
 // Load environment variables
 dotenv.config();
@@ -23,11 +24,13 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
-// Rate limiting
+// Rate limiting - more generous in development
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later'
+  max: process.env.NODE_ENV === 'production' ? 100 : 1000, // 1000 in dev, 100 in production
+  message: 'Too many requests from this IP, please try again later',
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
 // Middleware
@@ -57,7 +60,8 @@ app.get('/', (req, res) => {
       logs: '/api/v1/logs',
       analytics: '/api/v1/analytics',
       settings: '/api/v1/settings',
-      sync: '/api/v1/sync'
+      sync: '/api/v1/sync',
+      gym: '/api/v1/gym'
     },
     documentation: 'Visit /health for API status'
   });
@@ -80,6 +84,7 @@ app.use(`${API_PREFIX}/logs`, logRoutes);
 app.use(`${API_PREFIX}/analytics`, analyticsRoutes);
 app.use(`${API_PREFIX}/settings`, settingsRoutes);
 app.use(`${API_PREFIX}/sync`, syncRoutes);
+app.use(`${API_PREFIX}/gym`, gymRoutes);
 
 // Error handling
 app.use(notFound);
