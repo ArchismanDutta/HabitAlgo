@@ -1,0 +1,75 @@
+{
+  "name": "HabitAlgo",
+  "short_name": "HabitAlgo",
+  "description": "Track your daily habits with meaning and identity. Build better routines that stick.",
+  "theme_color": "#6366f1",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "start_url": "/",
+  "id": "/",
+  "categories": ["productivity", "lifestyle", "health"],
+  "icons": [
+    {
+      "src": "/pwa-64x64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "750x1334",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Today's Habits",
+      "short_name": "Today",
+      "description": "View and track today's habits",
+      "url": "/today",
+      "icons": [{ "src": "/icons/today-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Focus Mode",
+      "short_name": "Focus",
+      "description": "Minimal focus mode for tracking",
+      "url": "/focus",
+      "icons": [{ "src": "/icons/focus-96x96.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Weekly Review",
+      "short_name": "Review",
+      "description": "Review your weekly progress",
+      "url": "/today?review=true",
+      "icons": [{ "src": "/icons/review-96x96.png", "sizes": "96x96" }]
+    }
+  ]
+}
