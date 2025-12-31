@@ -18,6 +18,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -25,7 +36,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { Lightbulb, Heart } from 'lucide-react';
+import { Lightbulb, Heart, Trash2 } from 'lucide-react';
 
 const habitSchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name too long'),
@@ -50,10 +61,11 @@ interface HabitFormProps {
 }
 
 export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps) {
-  const { createHabit, updateHabit } = useHabitStore();
+  const { createHabit, updateHabit, deleteHabit } = useHabitStore();
   const [selectedColor, setSelectedColor] = useState(habit?.color || COLORS[0]);
   const [selectedIcon, setSelectedIcon] = useState(habit?.icon || ICONS[0]);
   const [showMeaning, setShowMeaning] = useState(!!habit?.why || !!habit?.identityStatement);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const {
     register,
@@ -116,6 +128,21 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
       onOpenChange(false);
     } catch (error) {
       toast.error('Failed to save habit');
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!habit) return;
+
+    setIsDeleting(true);
+    try {
+      await deleteHabit(habit._id);
+      toast.success('Habit deleted successfully');
+      onOpenChange(false);
+    } catch (error) {
+      toast.error('Failed to delete habit');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -364,17 +391,54 @@ export default function HabitForm({ open, onOpenChange, habit }: HabitFormProps)
             </div>
           </div>
 
-          <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? 'Saving...' : habit ? 'Update' : 'Create'}
-            </Button>
+          <DialogFooter className="sm:justify-between">
+            {habit ? (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    className="sm:mr-auto"
+                    disabled={isDeleting}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete <strong>{habit.name}</strong> and all its associated logs.
+                      This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      {isDeleting ? 'Deleting...' : 'Delete Habit'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            ) : (
+              <div />
+            )}
+            <div className="flex gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Saving...' : habit ? 'Update' : 'Create'}
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>
