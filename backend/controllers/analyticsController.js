@@ -167,11 +167,12 @@ export const getChartData = async (req, res) => {
 
     // Habit ranking for bar chart
     const habitStats = habits.map(habit => {
-      const habitLogs = logs.filter(log =>
-        log.habitId._id.toString() === habit._id.toString()
-      );
+      const habitLogs = logs.filter(log => {
+        const logHabitId = log.habitId?._id || log.habitId;
+        return logHabitId && logHabitId.toString() === habit._id.toString();
+      });
       const completed = habitLogs.filter(log => log.completed).length;
-      const rate = (completed / daysInMonth) * 100;
+      const rate = daysInMonth > 0 ? (completed / daysInMonth) * 100 : 0;
 
       return {
         habitId: habit._id,

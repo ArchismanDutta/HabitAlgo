@@ -110,45 +110,45 @@ export default function TodayView() {
                     isCompleted ? 'border-green-500/50 bg-green-50/50 dark:bg-green-950/20' : ''
                   }`}
                 >
-                  <CardContent className="p-3 xxs:p-4 sm:p-5">
-                    <div className="flex items-center justify-between gap-2 xxs:gap-3">
-                      <div className="flex items-center gap-2 xxs:gap-3 flex-1 min-w-0">
+                  <CardContent className="p-2 xxs:p-3 sm:p-4">
+                    <div className="flex items-center justify-between gap-1.5 xxs:gap-2 sm:gap-3">
+                      <div className="flex items-center gap-1.5 xxs:gap-2 sm:gap-3 flex-1 min-w-0">
                         <div
-                          className="text-2xl xxs:text-3xl flex items-center justify-center h-10 w-10 xxs:h-12 xxs:w-12 rounded-full cursor-pointer hover:scale-110 active:scale-95 transition-all flex-shrink-0"
+                          className="text-xl xxs:text-2xl sm:text-3xl flex items-center justify-center h-8 w-8 xxs:h-10 xxs:w-10 sm:h-12 sm:w-12 rounded-full cursor-pointer hover:scale-110 active:scale-95 transition-all flex-shrink-0"
                           style={{ backgroundColor: `${habit.color}20` }}
                           onClick={() => handleViewDetails(habit)}
                         >
                           {habit.icon}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-1.5 xxs:gap-2">
-                            <h3 className="text-base xxs:text-lg font-semibold truncate">{habit.name}</h3>
+                          <div className="flex items-center gap-1 xxs:gap-1.5">
+                            <h3 className="text-sm xxs:text-base sm:text-lg font-semibold truncate">{habit.name}</h3>
                             <Button
                               variant="ghost"
                               size="sm"
                               onClick={() => handleViewDetails(habit)}
-                              className="h-5 w-5 xxs:h-6 xxs:w-6 p-0 flex-shrink-0 hover:scale-110 active:scale-95 transition-all"
+                              className="h-4 w-4 xxs:h-5 xxs:w-5 sm:h-6 sm:w-6 p-0 flex-shrink-0 hover:scale-110 active:scale-95 transition-all"
                             >
-                              <Info className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 text-muted-foreground" />
+                              <Info className="h-3 w-3 xxs:h-3.5 xxs:w-3.5 sm:h-4 sm:w-4 text-muted-foreground" />
                             </Button>
                           </div>
                           {habit.identityStatement && (
-                            <p className="text-xs xxs:text-sm text-muted-foreground italic mt-0.5 xxs:mt-1 line-clamp-2">
+                            <p className="text-[10px] xxs:text-xs sm:text-sm text-muted-foreground italic mt-0.5 line-clamp-1 sm:line-clamp-2">
                               {habit.identityStatement}
                             </p>
                           )}
-                          <div className="flex items-center gap-1.5 xxs:gap-2 text-xs xxs:text-sm text-muted-foreground mt-1">
-                            <span className="px-1.5 xxs:px-2 py-0.5 rounded-full bg-secondary text-[10px] xxs:text-xs">
+                          <div className="flex items-center gap-1 xxs:gap-1.5 text-[10px] xxs:text-xs text-muted-foreground mt-0.5 xxs:mt-1">
+                            <span className="px-1 xxs:px-1.5 sm:px-2 py-0.5 rounded-full bg-secondary">
                               {habit.category}
                             </span>
                           </div>
                         </div>
                       </div>
                       <Button
-                        size="lg"
+                        size="sm"
                         variant={isCompleted ? 'default' : 'outline'}
                         onClick={() => handleToggle(habit._id, isCompleted)}
-                        className={`min-w-[80px] xxs:min-w-[100px] sm:min-w-[120px] h-10 xxs:h-11 text-xs xxs:text-sm sm:text-base flex-shrink-0 transition-all hover:scale-105 active:scale-95 ${
+                        className={`min-w-[60px] xxs:min-w-[80px] sm:min-w-[100px] h-8 xxs:h-9 sm:h-10 text-[10px] xxs:text-xs sm:text-sm flex-shrink-0 transition-all hover:scale-105 active:scale-95 px-2 xxs:px-3 sm:px-4 ${
                           isCompleted
                             ? 'bg-green-500 hover:bg-green-600 text-white'
                             : ''
@@ -156,13 +156,15 @@ export default function TodayView() {
                       >
                         {isCompleted ? (
                           <>
-                            <span className="mr-1 xxs:mr-2">✓</span>
-                            Done
+                            <span className="xs:hidden">✓</span>
+                            <span className="hidden xs:inline">✓ Done</span>
                           </>
                         ) : (
-                          <span className="hidden xxs:inline">Mark Done</span>
+                          <>
+                            <span className="xs:hidden">○</span>
+                            <span className="hidden xs:inline">Mark</span>
+                          </>
                         )}
-                        {!isCompleted && <span className="xxs:hidden">Mark</span>}
                       </Button>
                     </div>
                   </CardContent>

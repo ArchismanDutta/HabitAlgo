@@ -7,7 +7,7 @@ import { useWorkoutStore } from '@/store/useWorkoutStore';
 import { useMetricsStore } from '@/store/useMetricsStore';
 import { useSupplementStore } from '@/store/useSupplementStore';
 import Header from '@/components/layout/Header';
-import { Dumbbell, Calendar, TrendingUp, Trophy, Plus } from 'lucide-react';
+import { Dumbbell, Calendar, TrendingUp, Trophy, Plus, Brain } from 'lucide-react';
 import { toast } from 'sonner';
 import ProgramEditor from '@/components/gym/programs/ProgramEditor';
 
@@ -306,7 +306,7 @@ export default function GymDashboard() {
         </div>
 
         {/* Quick Links */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 xxs:gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 xxs:gap-3 sm:gap-4">
           <Button variant="outline" className="h-16 xxs:h-20 sm:h-24 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
             <Link to="/gym/calendar" className="flex flex-col gap-1.5 xxs:gap-2">
               <Calendar className="h-5 w-5 xxs:h-6 xxs:w-6 sm:h-7 sm:w-7" />
@@ -335,6 +335,12 @@ export default function GymDashboard() {
             <Link to="/gym/analytics" className="flex flex-col gap-1.5 xxs:gap-2">
               <TrendingUp className="h-5 w-5 xxs:h-6 xxs:w-6 sm:h-7 sm:w-7" />
               <span className="text-xs xxs:text-sm sm:text-base font-medium">Analytics</span>
+            </Link>
+          </Button>
+          <Button variant="outline" className="h-16 xxs:h-20 sm:h-24 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
+            <Link to="/gym/correlations" className="flex flex-col gap-1.5 xxs:gap-2">
+              <Brain className="h-5 w-5 xxs:h-6 xxs:w-6 sm:h-7 sm:w-7" />
+              <span className="text-xs xxs:text-sm sm:text-base font-medium">Insights</span>
             </Link>
           </Button>
         </div>

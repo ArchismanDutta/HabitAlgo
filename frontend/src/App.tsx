@@ -22,6 +22,7 @@ import MetricsView from './views/gym/MetricsView';
 import SupplementsView from './views/gym/SupplementsView';
 import GymAnalyticsView from './views/gym/GymAnalyticsView';
 import GymCalendarView from './views/gym/GymCalendarView';
+import CorrelationsView from './views/gym/CorrelationsView';
 
 // Motivational Components
 import MissedHabitsChecker from './components/motivational/MissedHabitsChecker';
@@ -71,6 +72,7 @@ function App() {
           <Route path="/gym/metrics" element={<MetricsView />} />
           <Route path="/gym/supplements" element={<SupplementsView />} />
           <Route path="/gym/analytics" element={<GymAnalyticsView />} />
+          <Route path="/gym/correlations" element={<CorrelationsView />} />
 
           <Route path="*" element={<Navigate to="/today" replace />} />
         </Routes>

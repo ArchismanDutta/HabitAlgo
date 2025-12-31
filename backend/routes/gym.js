@@ -52,6 +52,9 @@ import {
   getProgressSummary,
   getStrengthComparison
 } from '../controllers/analyticsGymController.js';
+import {
+  getHabitGymCorrelation
+} from '../controllers/correlationController.js';
 
 const router = express.Router();
 
@@ -111,5 +114,6 @@ router.get('/analytics/prs', getPersonalRecords);
 router.get('/analytics/exercise/:exerciseId', getExerciseProgress);
 router.get('/analytics/progress', getProgressSummary);
 router.get('/analytics/comparison', getStrengthComparison);
+router.get('/analytics/correlations', getHabitGymCorrelation);
 
 export default router;

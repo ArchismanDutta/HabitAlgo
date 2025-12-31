@@ -115,12 +115,12 @@ export default function MoodWeatherTracker() {
         {/* Mood */}
         <div className="space-y-2">
           <Label className="text-base font-semibold">Mood</Label>
-          <div className="grid grid-cols-8 gap-2">
+          <div className="flex flex-wrap gap-1.5 xxs:gap-2 justify-center">
             {MOOD_EMOJIS.map(({ emoji, label, value }) => (
               <button
                 key={emoji}
                 onClick={() => handleMoodSelect(emoji, value)}
-                className={`text-3xl p-3 rounded-lg transition-all hover:scale-110 ${
+                className={`text-2xl xxs:text-3xl w-10 h-10 xxs:w-12 xxs:h-12 sm:w-14 sm:h-14 rounded-lg transition-all hover:scale-110 flex items-center justify-center ${
                   tracking.mood === emoji
                     ? 'bg-primary/20 ring-2 ring-primary scale-110'
                     : 'hover:bg-accent'
@@ -174,12 +174,12 @@ export default function MoodWeatherTracker() {
         {/* Weather */}
         <div className="space-y-2">
           <Label className="text-base font-semibold">Weather</Label>
-          <div className="grid grid-cols-6 gap-2">
+          <div className="flex flex-wrap gap-1.5 xxs:gap-2 justify-center">
             {WEATHER_OPTIONS.map(({ emoji, label }) => (
               <button
                 key={emoji}
                 onClick={() => handleWeatherSelect(emoji)}
-                className={`text-3xl p-3 rounded-lg transition-all hover:scale-110 ${
+                className={`text-2xl xxs:text-3xl w-10 h-10 xxs:w-12 xxs:h-12 sm:w-14 sm:h-14 rounded-lg transition-all hover:scale-110 flex items-center justify-center ${
                   tracking.weather === emoji
                     ? 'bg-blue-100 dark:bg-blue-900 ring-2 ring-blue-500 scale-110'
                     : 'hover:bg-accent'

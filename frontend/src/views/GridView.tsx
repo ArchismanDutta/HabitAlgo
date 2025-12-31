@@ -77,17 +77,18 @@ export default function GridView() {
           Week {weekNum}
         </h3>
         <div className="overflow-x-auto rounded-lg border -mx-3 xxs:-mx-2 sm:mx-0">
+          <div className="min-w-max">
           <table className="w-full border-collapse">
             <thead>
               <tr className="border-b-2">
                 <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold sticky left-0 z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm w-[28px] xxs:w-[36px] sm:w-[52px]">
                   #
                 </th>
-                <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold min-w-[100px] xxs:min-w-[140px] sm:min-w-[180px] max-w-[140px] xxs:max-w-[200px] sm:max-w-[280px] sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm">
+                <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold w-[150px] xxs:w-[180px] sm:w-[220px] sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm">
                   Habits
                 </th>
                 {daysInWeek.map(day => (
-                  <th key={day} className="text-center p-1 xxs:p-1.5 sm:p-2 bg-muted min-w-[44px] xxs:min-w-[50px] sm:min-w-[60px]">
+                  <th key={day} className="text-center p-0.5 xxs:p-1 sm:p-1.5 bg-muted min-w-[38px] xxs:min-w-[44px] sm:min-w-[52px]">
                     <div className="text-xs xxs:text-sm font-semibold">{day}</div>
                     <div className="text-[10px] xxs:text-xs text-muted-foreground hidden xxs:block">{getDayOfWeek(day)}</div>
                   </th>
@@ -100,10 +101,10 @@ export default function GridView() {
                   <td className="p-1 xxs:p-1.5 sm:p-2 text-center font-semibold bg-background sticky left-0 z-10 border-r border-border text-[10px] xxs:text-xs sm:text-sm">
                     {index + 1}
                   </td>
-                  <td className="p-1 xxs:p-1.5 sm:p-2 bg-background sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r border-border">
+                  <td className="p-1 xxs:p-1.5 sm:p-2 bg-background sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r border-border w-[150px] xxs:w-[180px] sm:w-[220px]">
                     <div className="flex items-center gap-1 xxs:gap-1.5 sm:gap-2">
-                      <span className="text-base xxs:text-lg sm:text-xl flex-shrink-0">{habit.icon}</span>
-                      <div className="truncate max-w-[80px] xxs:max-w-[120px] sm:max-w-[180px]">
+                      <span className="text-sm xxs:text-base sm:text-lg flex-shrink-0">{habit.icon}</span>
+                      <div className="truncate flex-1 min-w-0">
                         <div className="font-medium truncate text-[10px] xxs:text-xs sm:text-sm">{habit.name}</div>
                         {habit.type === 'numeric' && (
                           <div className="text-[9px] xxs:text-[10px] sm:text-xs text-muted-foreground truncate">
@@ -116,17 +117,17 @@ export default function GridView() {
                   {daysInWeek.map(day => {
                     const completed = isCompleted(habit._id, day);
                     return (
-                      <td key={day} className="p-0.5 xxs:p-1 text-center">
+                      <td key={day} className="p-0.5 text-center">
                         <button
                           onClick={() => handleToggle(habit._id, day)}
-                          className={`w-9 h-9 xxs:w-10 xxs:h-10 rounded border-2 transition-all inline-flex items-center justify-center hover:scale-110 active:scale-95 ${
+                          className={`w-7 h-7 xxs:w-8 xxs:h-8 sm:w-9 sm:h-9 rounded border-2 transition-all inline-flex items-center justify-center hover:scale-110 active:scale-95 ${
                             completed
                               ? 'bg-green-500 border-green-600 text-white'
                               : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-primary'
                           }`}
                           aria-label={`Mark ${habit.name} as ${completed ? 'incomplete' : 'complete'} for day ${day}`}
                         >
-                          {completed && <span className="text-base xxs:text-lg font-bold">✓</span>}
+                          {completed && <span className="text-sm xxs:text-base sm:text-lg font-bold">✓</span>}
                         </button>
                       </td>
                     );
@@ -135,6 +136,7 @@ export default function GridView() {
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       </div>
     );
@@ -143,17 +145,18 @@ export default function GridView() {
   const renderMonthView = () => {
     return (
       <div className="overflow-x-auto rounded-lg border -mx-3 xxs:-mx-2 sm:mx-0">
+        <div className="min-w-max">
         <table className="w-full border-collapse">
           <thead>
             <tr className="border-b-2">
               <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold sticky left-0 z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm w-[28px] xxs:w-[36px] sm:w-[52px]">
                 #
               </th>
-              <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold min-w-[90px] xxs:min-w-[120px] sm:min-w-[160px] max-w-[120px] xxs:max-w-[180px] sm:max-w-[240px] sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm">
+              <th className="text-left p-1 xxs:p-1.5 sm:p-2 bg-pink-100 dark:bg-pink-900 font-bold w-[130px] xxs:w-[160px] sm:w-[200px] sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r-2 border-pink-300 dark:border-pink-700 text-[10px] xxs:text-xs sm:text-sm">
                 Habits
               </th>
               {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => (
-                <th key={day} className="text-center p-0.5 xxs:p-1 bg-muted min-w-[36px] xxs:min-w-[42px] sm:min-w-[50px]">
+                <th key={day} className="text-center p-0.5 bg-muted min-w-[32px] xxs:min-w-[38px] sm:min-w-[44px]">
                   <div className="text-[10px] xxs:text-xs font-semibold">{day}</div>
                   <div className="text-[9px] xxs:text-[10px] sm:text-xs text-muted-foreground hidden xs:block">{getDayOfWeek(day).slice(0, 3)}</div>
                 </th>
@@ -166,10 +169,10 @@ export default function GridView() {
                 <td className="p-1 xxs:p-1.5 sm:p-2 text-center font-semibold bg-background sticky left-0 z-10 border-r border-border text-[10px] xxs:text-xs sm:text-sm">
                   {index + 1}
                 </td>
-                <td className="p-1 xxs:p-1.5 sm:p-2 bg-background sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r border-border">
+                <td className="p-1 xxs:p-1.5 sm:p-2 bg-background sticky left-[28px] xxs:left-[36px] sm:left-[52px] z-10 border-r border-border w-[130px] xxs:w-[160px] sm:w-[200px]">
                   <div className="flex items-center gap-1 xxs:gap-1.5 sm:gap-2">
-                    <span className="text-base xxs:text-lg sm:text-xl flex-shrink-0">{habit.icon}</span>
-                    <span className="font-medium truncate max-w-[70px] xxs:max-w-[100px] sm:max-w-[150px] text-[10px] xxs:text-xs sm:text-sm">{habit.name}</span>
+                    <span className="text-sm xxs:text-base sm:text-lg flex-shrink-0">{habit.icon}</span>
+                    <span className="font-medium truncate flex-1 min-w-0 text-[10px] xxs:text-xs sm:text-sm">{habit.name}</span>
                   </div>
                 </td>
                 {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
@@ -178,14 +181,14 @@ export default function GridView() {
                     <td key={day} className="p-0.5 text-center">
                       <button
                         onClick={() => handleToggle(habit._id, day)}
-                        className={`w-7 h-7 xxs:w-8 xxs:h-8 rounded border transition-all inline-flex items-center justify-center hover:scale-110 active:scale-95 ${
+                        className={`w-6 h-6 xxs:w-7 xxs:h-7 sm:w-8 sm:h-8 rounded border transition-all inline-flex items-center justify-center hover:scale-110 active:scale-95 ${
                           completed
                             ? 'bg-green-500 border-green-600 text-white'
                             : 'bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 hover:border-primary'
                         }`}
                         aria-label={`Mark ${habit.name} as ${completed ? 'incomplete' : 'complete'} for day ${day}`}
                       >
-                        {completed && <span className="text-xs xxs:text-sm font-bold">✓</span>}
+                        {completed && <span className="text-[10px] xxs:text-xs sm:text-sm font-bold">✓</span>}
                       </button>
                     </td>
                   );
@@ -194,6 +197,7 @@ export default function GridView() {
             ))}
           </tbody>
         </table>
+        </div>
       </div>
     );
   };
