@@ -44,6 +44,25 @@ app.use(morgan('dev'));
 // Apply rate limiting to API routes
 app.use('/api/', limiter);
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'HabitAlgo API',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      api: '/api/v1',
+      habits: '/api/v1/habits',
+      logs: '/api/v1/logs',
+      analytics: '/api/v1/analytics',
+      settings: '/api/v1/settings',
+      sync: '/api/v1/sync'
+    },
+    documentation: 'Visit /health for API status'
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({
