@@ -6,13 +6,12 @@ import { analyticsService } from '@/services/analyticsService';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Header from '@/components/layout/Header';
-import { ChevronLeft, ChevronRight, Trophy, TrendingUp } from 'lucide-react';
-import { getMonthName, formatDate } from '@/utils/dateUtils';
+import { ChevronLeft, ChevronRight, Trophy } from 'lucide-react';
+import { getMonthName } from '@/utils/dateUtils';
 import { ChartData } from '@/types';
-import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, Tooltip } from 'recharts';
 import MoodWeatherTracker from '@/components/tracking/MoodWeatherTracker';
 
 export default function EnhancedAnalyticsView() {
@@ -133,8 +132,6 @@ export default function EnhancedAnalyticsView() {
       </div>
     );
   }
-
-  const COLORS = ['#ec4899', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b'];
 
   return (
     <div className="min-h-screen bg-background">

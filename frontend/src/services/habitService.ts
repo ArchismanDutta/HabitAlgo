@@ -22,7 +22,7 @@ export const habitService = {
       console.warn('Fetching from IndexedDB (offline mode)');
 
       if (activeOnly) {
-        return await db.habits.where('isActive').equals(true).toArray();
+        return await db.habits.filter(habit => habit.isActive === true).toArray();
       } else {
         return await db.habits.toArray();
       }

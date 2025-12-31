@@ -14,7 +14,7 @@ interface HabitStore {
   toggleHabit: (id: string) => Promise<void>;
 }
 
-export const useHabitStore = create<HabitStore>((set, get) => ({
+export const useHabitStore = create<HabitStore>((set) => ({
   habits: [],
   loading: false,
   error: null,

@@ -1,7 +1,5 @@
 import { api } from '@/lib/api';
 import { db, getPendingSyncItems, markSyncItemComplete, clearSyncedItems } from '@/lib/db';
-import { habitService } from './habitService';
-import { logService } from './logService';
 
 export const syncService = {
   // Check if online

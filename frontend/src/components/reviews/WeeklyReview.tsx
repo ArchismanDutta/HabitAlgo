@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useHabitStore } from '@/store/useHabitStore';
 import { useLogStore } from '@/store/useLogStore';
-import { Habit, DailyLog } from '@/types';
+import { Habit } from '@/types';
 import {
   Dialog,
   DialogContent,
@@ -25,7 +25,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import { getTodayString, formatDate } from '@/utils/dateUtils';
+import { formatDate } from '@/utils/dateUtils';
 import { toast } from 'sonner';
 
 interface HabitWeekStats {

@@ -39,7 +39,7 @@ export const addToSyncQueue = async (
 };
 
 export const getPendingSyncItems = async (): Promise<SyncQueueItem[]> => {
-  return await db.syncQueue.where('synced').equals(false).toArray();
+  return await db.syncQueue.filter(item => item.synced === false).toArray();
 };
 
 export const markSyncItemComplete = async (id: number) => {
@@ -47,7 +47,7 @@ export const markSyncItemComplete = async (id: number) => {
 };
 
 export const clearSyncedItems = async () => {
-  await db.syncQueue.where('synced').equals(true).delete();
+  await db.syncQueue.filter(item => item.synced === true).delete();
 };
 
 // Initialize default settings

@@ -1,5 +1,5 @@
 import { DailyLog } from '@/types';
-import { normalizeDate, getTodayString, formatDate } from './dateUtils';
+import { normalizeDate } from './dateUtils';
 
 export const calculateStreak = (logs: DailyLog[]): number => {
   if (logs.length === 0) return 0;

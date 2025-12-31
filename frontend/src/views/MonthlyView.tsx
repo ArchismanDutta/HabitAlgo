@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useHabitStore } from '@/store/useHabitStore';
 import { useLogStore } from '@/store/useLogStore';
 import { useCalendarStore } from '@/store/useCalendarStore';
@@ -11,7 +11,7 @@ import { getMonthDays, isDateInMonth, formatDate, getMonthName } from '@/utils/d
 export default function MonthlyView() {
   const { habits, fetchHabits } = useHabitStore();
   const { logs, fetchLogsForRange } = useLogStore();
-  const { selectedYear, selectedMonth, navigateMonth, setDate } = useCalendarStore();
+  const { selectedYear, selectedMonth, navigateMonth } = useCalendarStore();
 
   useEffect(() => {
     fetchHabits();

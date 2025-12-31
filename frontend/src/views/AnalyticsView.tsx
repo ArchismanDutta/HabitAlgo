@@ -18,7 +18,6 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
   ResponsiveContainer,
 } from 'recharts';
 import { ChartData } from '@/types';
@@ -239,7 +238,7 @@ export default function AnalyticsView() {
                   <YAxis label={{ value: 'Completion %', angle: -90, position: 'insideLeft' }} />
                   <Tooltip />
                   <Bar dataKey="rate" fill="#6366f1">
-                    {chartData?.habitStats.map((entry, index) => (
+                    {chartData?.habitStats.map((_entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Bar>

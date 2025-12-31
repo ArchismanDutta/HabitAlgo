@@ -1,12 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useHabitStore } from '@/store/useHabitStore';
 import { useLogStore } from '@/store/useLogStore';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { getTodayString, formatDate } from '@/utils/dateUtils';
-import { calculateStreak } from '@/utils/streakCalculator';
 import { toast } from 'sonner';
-import { Flame, TrendingUp, Info } from 'lucide-react';
+import { TrendingUp, Info } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import HabitDetailModal from '@/components/habits/HabitDetailModal';
 import HabitForm from '@/components/habits/HabitForm';

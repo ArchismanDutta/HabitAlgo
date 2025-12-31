@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { getTodayString, formatDate } from '@/utils/dateUtils';
 import { logService } from '@/services/logService';
 import { toast } from 'sonner';
-import { Moon, Sun, Cloud } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import Header from '@/components/layout/Header';
 
 export default function FocusView() {

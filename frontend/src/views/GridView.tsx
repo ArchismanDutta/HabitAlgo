@@ -65,7 +65,7 @@ export default function GridView() {
   const renderWeekView = (weekNum: number) => {
     const startDay = (weekNum - 1) * 7 + 1;
     const endDay = Math.min(weekNum * 7, daysInMonth);
-    const daysInWeek = [];
+    const daysInWeek: number[] = [];
 
     for (let day = startDay; day <= endDay; day++) {
       daysInWeek.push(day);
