@@ -10,13 +10,11 @@ import {
   Target,
   Plus,
   TrendingUp,
-  Calendar,
   DollarSign,
   Edit,
   Trash2,
   CheckCircle,
   AlertCircle,
-  Award
 } from 'lucide-react';
 import type { FinancialGoal, GoalFormData, GoalType } from '../../types/finance';
 import { toast } from 'sonner';

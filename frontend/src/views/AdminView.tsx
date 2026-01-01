@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { toast } from 'sonner';
-import { ArrowLeft, Users, UserPlus, Edit, Trash2, Key, Shield, Eye } from 'lucide-react';
+import { ArrowLeft, Users, UserPlus, Edit, Trash2, Key, Shield } from 'lucide-react';
 
 export default function AdminView() {
   const navigate = useNavigate();

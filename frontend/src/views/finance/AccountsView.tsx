@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Plus, Wallet, CreditCard, Landmark, TrendingUp, Target, DollarSign, Edit, Archive, ArrowRightLeft, Eye, EyeOff } from 'lucide-react';
+import { Plus, Wallet, CreditCard, Landmark, TrendingUp, Target, DollarSign, Edit, Archive, Eye, EyeOff } from 'lucide-react';
 import { Card } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../../components/ui/dialog';
@@ -7,7 +7,7 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import financeService from '../../services/financeService';
-import type { FinancialAccount, AccountType, NetWorthData, AccountFormData } from '../../types/finance';
+import type { FinancialAccount, AccountType, NetWorthData } from '../../types/finance';
 import { toast } from 'sonner';
 import Header from '../../components/layout/Header';
 
