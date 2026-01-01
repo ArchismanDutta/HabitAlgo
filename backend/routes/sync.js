@@ -4,11 +4,12 @@ import {
   pullChanges,
   getSyncStatus
 } from '../controllers/syncController.js';
+import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post('/push', pushChanges);
-router.get('/pull', pullChanges);
-router.post('/status', getSyncStatus);
+router.post('/push', protect, pushChanges);
+router.get('/pull', protect, pullChanges);
+router.post('/status', protect, getSyncStatus);
 
 export default router;

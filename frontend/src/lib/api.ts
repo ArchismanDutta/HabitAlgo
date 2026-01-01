@@ -7,7 +7,7 @@ export const api = axios.create({
   headers: {
     'Content-Type': 'application/json'
   },
-  timeout: 10000
+  timeout: 60000 // 60 seconds for production environments (Render cold starts)
 });
 
 // ============================================
@@ -49,6 +49,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Don't show toast for sync operations (they handle errors internally)
+    const isSyncRequest = error.config?.url?.includes('/sync/');
+
     if (error.response) {
       const status = error.response.status;
       const message =
@@ -56,28 +59,34 @@ api.interceptors.response.use(
         error.response.data?.error ||
         'An error occurred';
 
-      if (status === 401) {
-        toast.error('Session expired. Please login again.');
-      } else if (status === 403) {
-        toast.error('You do not have permission to perform this action.');
-      } else if (status === 404) {
-        toast.error('The requested resource was not found.');
-      } else if (status === 500) {
-        toast.error('Server error. Please try again later.');
-      } else {
-        toast.error(message);
+      if (!isSyncRequest) {
+        if (status === 401) {
+          toast.error('Session expired. Please login again.');
+        } else if (status === 403) {
+          toast.error('You do not have permission to perform this action.');
+        } else if (status === 404) {
+          toast.error('The requested resource was not found.');
+        } else if (status === 500) {
+          toast.error('Server error. Please try again later.');
+        } else {
+          toast.error(message);
+        }
       }
 
       console.error('API Error:', error.response.data);
     } else if (error.request) {
-      if (error.code === 'ECONNABORTED') {
-        toast.error('Request timeout. Please try again.');
-      } else {
-        toast.error('Network error. Please check your internet connection.');
+      if (!isSyncRequest) {
+        if (error.code === 'ECONNABORTED') {
+          toast.error('Request timeout. The server is taking longer than expected.');
+        } else {
+          toast.error('Network error. Please check your internet connection.');
+        }
       }
       console.error('Network Error:', error.message);
     } else {
-      toast.error('An unexpected error occurred.');
+      if (!isSyncRequest) {
+        toast.error('An unexpected error occurred.');
+      }
       console.error('Error:', error.message);
     }
 

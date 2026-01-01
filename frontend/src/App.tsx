@@ -56,8 +56,10 @@ function App() {
   useEffect(() => {
     if (!isAuthenticated) return;
 
-    // Initial sync
-    syncService.fullSync().catch(console.error);
+    // Initial sync with delay for server warm-up (especially on Render free tier)
+    const initialSyncTimeout = setTimeout(() => {
+      syncService.fullSync().catch(console.error);
+    }, 2000);
 
     // Set up periodic sync
     const syncInterval = setInterval(() => {
@@ -72,6 +74,7 @@ function App() {
     window.addEventListener('online', handleOnline);
 
     return () => {
+      clearTimeout(initialSyncTimeout);
       clearInterval(syncInterval);
       window.removeEventListener('online', handleOnline);
     };

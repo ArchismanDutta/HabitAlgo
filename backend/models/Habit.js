@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
 
 const habitSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'User ID is required'],
+    index: true
+  },
   name: {
     type: String,
     required: [true, 'Habit name is required'],
@@ -66,8 +72,8 @@ const habitSchema = new mongoose.Schema({
 });
 
 // Indexes for performance
-habitSchema.index({ isActive: 1, createdAt: -1 });
-habitSchema.index({ category: 1 });
+habitSchema.index({ userId: 1, isActive: 1, createdAt: -1 });
+habitSchema.index({ userId: 1, category: 1 });
 
 // Virtual for display category
 habitSchema.virtual('displayCategory').get(function() {

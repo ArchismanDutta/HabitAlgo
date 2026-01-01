@@ -3,7 +3,7 @@ import Settings from '../models/Settings.js';
 // Get settings
 export const getSettings = async (req, res) => {
   try {
-    const settings = await Settings.getSettings();
+    const settings = await Settings.getSettings(req.user._id);
     res.json({ success: true, data: settings });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -13,10 +13,13 @@ export const getSettings = async (req, res) => {
 // Update settings
 export const updateSettings = async (req, res) => {
   try {
-    let settings = await Settings.findOne();
+    let settings = await Settings.findOne({ userId: req.user._id });
 
     if (!settings) {
-      settings = await Settings.create(req.body);
+      settings = await Settings.create({
+        ...req.body,
+        userId: req.user._id
+      });
     } else {
       Object.assign(settings, req.body);
       await settings.save();
@@ -31,7 +34,7 @@ export const updateSettings = async (req, res) => {
 // Update last sync time
 export const updateSyncTime = async (req, res) => {
   try {
-    const settings = await Settings.getSettings();
+    const settings = await Settings.getSettings(req.user._id);
     settings.lastSyncTime = new Date();
     await settings.save();
 

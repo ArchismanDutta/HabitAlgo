@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
 
 const monthlySummarySchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
+  },
   year: {
     type: Number,
     required: true
@@ -60,11 +66,11 @@ const monthlySummarySchema = new mongoose.Schema({
 });
 
 // Unique compound index
-monthlySummarySchema.index({ year: 1, month: 1, habitId: 1 }, { unique: true });
-monthlySummarySchema.index({ habitId: 1, year: -1, month: -1 });
+monthlySummarySchema.index({ userId: 1, year: 1, month: 1, habitId: 1 }, { unique: true });
+monthlySummarySchema.index({ userId: 1, habitId: 1, year: -1, month: -1 });
 
 // Static method to recalculate summary
-monthlySummarySchema.statics.recalculate = async function(habitId, year, month) {
+monthlySummarySchema.statics.recalculate = async function(habitId, year, month, userId) {
   const DailyLog = mongoose.model('DailyLog');
 
   // Get all logs for this habit in this month
@@ -72,6 +78,7 @@ monthlySummarySchema.statics.recalculate = async function(habitId, year, month) 
   const endDate = new Date(year, month, 0, 23, 59, 59);
 
   const logs = await DailyLog.find({
+    userId,
     habitId,
     date: { $gte: startDate, $lte: endDate }
   }).sort({ date: 1 });
@@ -129,8 +136,9 @@ monthlySummarySchema.statics.recalculate = async function(habitId, year, month) 
 
   // Upsert summary
   return await this.findOneAndUpdate(
-    { year, month, habitId },
+    { userId, year, month, habitId },
     {
+      userId,
       totalDays: daysInMonth,
       completedDays,
       completionRate,

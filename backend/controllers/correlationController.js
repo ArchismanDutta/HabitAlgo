@@ -14,15 +14,17 @@ export const getHabitGymCorrelation = async (req, res) => {
     startDate.setDate(startDate.getDate() - parseInt(days));
 
     // Get all active habits
-    const habits = await Habit.find({ isActive: true });
+    const habits = await Habit.find({ userId: req.user._id, isActive: true });
 
     // Get all daily logs in range
     const dailyLogs = await DailyLog.find({
+      userId: req.user._id,
       date: { $gte: startDate, $lte: endDate }
     }).populate('habitId');
 
     // Get all workout sessions in range
     const workoutSessions = await WorkoutSession.find({
+      userId: req.user._id,
       date: {
         $gte: startDate.toISOString().split('T')[0],
         $lte: endDate.toISOString().split('T')[0]

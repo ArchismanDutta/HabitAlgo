@@ -11,22 +11,23 @@ import {
   saveScreenTime,
   getScreenTimeByMonth
 } from '../controllers/logController.js';
+import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.get('/', getLogs);
-router.get('/day/:date', getLogsByDate);
-router.post('/', createOrUpdateLog);
-router.post('/bulk', bulkCreateOrUpdateLogs);
-router.put('/:id', updateLog);
-router.delete('/:id', deleteLog);
+router.get('/', protect, getLogs);
+router.get('/day/:date', protect, getLogsByDate);
+router.post('/', protect, createOrUpdateLog);
+router.post('/bulk', protect, bulkCreateOrUpdateLogs);
+router.put('/:id', protect, updateLog);
+router.delete('/:id', protect, deleteLog);
 
 // Reflection routes
-router.post('/reflection', saveReflection);
-router.get('/reflection/:date', getReflection);
+router.post('/reflection', protect, saveReflection);
+router.get('/reflection/:date', protect, getReflection);
 
 // Screen time routes
-router.post('/screentime', saveScreenTime);
-router.get('/screentime/month', getScreenTimeByMonth);
+router.post('/screentime', protect, saveScreenTime);
+router.get('/screentime/month', protect, getScreenTimeByMonth);
 
 export default router;

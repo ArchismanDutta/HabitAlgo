@@ -9,7 +9,11 @@ export const getCurrentSummary = async (req, res) => {
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
 
-    const summaries = await MonthlySummary.find({ year, month })
+    const summaries = await MonthlySummary.find({
+      userId: req.user._id,
+      year,
+      month
+    })
       .populate('habitId')
       .sort({ completionRate: -1 });
 
@@ -25,6 +29,7 @@ export const getMonthlyData = async (req, res) => {
     const { year, month } = req.query;
 
     const summaries = await MonthlySummary.find({
+      userId: req.user._id,
       year: parseInt(year),
       month: parseInt(month)
     })
@@ -40,7 +45,7 @@ export const getMonthlyData = async (req, res) => {
 // Get all habit streaks
 export const getStreaks = async (req, res) => {
   try {
-    const habits = await Habit.find({ isActive: true });
+    const habits = await Habit.find({ userId: req.user._id, isActive: true });
     const streakData = [];
 
     for (const habit of habits) {
@@ -49,6 +54,7 @@ export const getStreaks = async (req, res) => {
       ninetyDaysAgo.setDate(ninetyDaysAgo.getDate() - 90);
 
       const logs = await DailyLog.find({
+        userId: req.user._id,
         habitId: habit._id,
         date: { $gte: ninetyDaysAgo }
       }).sort({ date: -1 });
@@ -86,7 +92,10 @@ export const getTrends = async (req, res) => {
       startDate.setDate(startDate.getDate() - 30);
     }
 
-    const filter = { date: { $gte: startDate, $lte: endDate } };
+    const filter = {
+      userId: req.user._id,
+      date: { $gte: startDate, $lte: endDate }
+    };
     if (habitId) {
       filter.habitId = habitId;
     }
@@ -127,13 +136,14 @@ export const getChartData = async (req, res) => {
     const targetMonth = month ? parseInt(month) : new Date().getMonth() + 1;
 
     // Get all active habits
-    const habits = await Habit.find({ isActive: true });
+    const habits = await Habit.find({ userId: req.user._id, isActive: true });
 
     // Get logs for the month
     const startDate = new Date(targetYear, targetMonth - 1, 1);
     const endDate = new Date(targetYear, targetMonth, 0, 23, 59, 59);
 
     const logs = await DailyLog.find({
+      userId: req.user._id,
       date: { $gte: startDate, $lte: endDate }
     }).populate('habitId');
 
@@ -209,12 +219,12 @@ export const recalculateSummaries = async (req, res) => {
 
     if (habitId) {
       // Recalculate for specific habit
-      await MonthlySummary.recalculate(habitId, year, month);
+      await MonthlySummary.recalculate(habitId, year, month, req.user._id);
     } else {
       // Recalculate for all habits
-      const habits = await Habit.find({ isActive: true });
+      const habits = await Habit.find({ userId: req.user._id, isActive: true });
       for (const habit of habits) {
-        await MonthlySummary.recalculate(habit._id, year, month);
+        await MonthlySummary.recalculate(habit._id, year, month, req.user._id);
       }
     }
 

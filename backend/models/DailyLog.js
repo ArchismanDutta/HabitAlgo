@@ -1,6 +1,12 @@
 import mongoose from 'mongoose';
 
 const dailyLogSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: [true, 'User ID is required'],
+    index: true
+  },
   date: {
     type: Date,
     required: true,
@@ -60,11 +66,11 @@ const dailyLogSchema = new mongoose.Schema({
 });
 
 // Compound indexes for efficient queries
-dailyLogSchema.index({ date: -1, habitId: 1 });
-dailyLogSchema.index({ habitId: 1, date: -1 });
+dailyLogSchema.index({ userId: 1, date: -1, habitId: 1 });
+dailyLogSchema.index({ userId: 1, habitId: 1, date: -1 });
 
-// Unique constraint: one log per habit per day
-dailyLogSchema.index({ date: 1, habitId: 1 }, { unique: true });
+// Unique constraint: one log per habit per day per user
+dailyLogSchema.index({ userId: 1, date: 1, habitId: 1 }, { unique: true });
 
 // Static method to get logs for a specific date
 dailyLogSchema.statics.getByDate = function(date) {

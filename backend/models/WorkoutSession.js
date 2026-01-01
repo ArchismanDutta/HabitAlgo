@@ -79,11 +79,13 @@ const exercisePerformanceSchema = new mongoose.Schema({
 
 const workoutSessionSchema = new mongoose.Schema({
   userId: {
-    type: String, // TODO: Change to ObjectId when auth is implemented
-    required: true
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    index: true
   },
   programId: {
-    type: String, // TODO: Change to ObjectId when auth is implemented
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'WorkoutProgram',
     required: true
   },

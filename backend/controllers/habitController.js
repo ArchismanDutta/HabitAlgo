@@ -5,7 +5,7 @@ import DailyLog from '../models/DailyLog.js';
 export const getAllHabits = async (req, res) => {
   try {
     const { active } = req.query;
-    const filter = {};
+    const filter = { userId: req.user._id };
 
     if (active === 'true') {
       filter.isActive = true;
@@ -21,7 +21,7 @@ export const getAllHabits = async (req, res) => {
 // Get habit by ID with recent logs
 export const getHabitById = async (req, res) => {
   try {
-    const habit = await Habit.findById(req.params.id);
+    const habit = await Habit.findOne({ _id: req.params.id, userId: req.user._id });
 
     if (!habit) {
       return res.status(404).json({ success: false, error: 'Habit not found' });
@@ -32,6 +32,7 @@ export const getHabitById = async (req, res) => {
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
     const logs = await DailyLog.find({
+      userId: req.user._id,
       habitId: req.params.id,
       date: { $gte: thirtyDaysAgo }
     }).sort({ date: -1 });
@@ -45,7 +46,10 @@ export const getHabitById = async (req, res) => {
 // Create new habit
 export const createHabit = async (req, res) => {
   try {
-    const habit = await Habit.create(req.body);
+    const habit = await Habit.create({
+      ...req.body,
+      userId: req.user._id
+    });
     res.status(201).json({ success: true, data: habit });
   } catch (error) {
     res.status(400).json({ success: false, error: error.message });
@@ -55,8 +59,8 @@ export const createHabit = async (req, res) => {
 // Update habit
 export const updateHabit = async (req, res) => {
   try {
-    const habit = await Habit.findByIdAndUpdate(
-      req.params.id,
+    const habit = await Habit.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -74,8 +78,8 @@ export const updateHabit = async (req, res) => {
 // Delete habit (soft delete)
 export const deleteHabit = async (req, res) => {
   try {
-    const habit = await Habit.findByIdAndUpdate(
-      req.params.id,
+    const habit = await Habit.findOneAndUpdate(
+      { _id: req.params.id, userId: req.user._id },
       { isActive: false },
       { new: true }
     );
@@ -93,7 +97,7 @@ export const deleteHabit = async (req, res) => {
 // Toggle habit active status
 export const toggleHabit = async (req, res) => {
   try {
-    const habit = await Habit.findById(req.params.id);
+    const habit = await Habit.findOne({ _id: req.params.id, userId: req.user._id });
 
     if (!habit) {
       return res.status(404).json({ success: false, error: 'Habit not found' });

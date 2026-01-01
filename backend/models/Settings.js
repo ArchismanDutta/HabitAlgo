@@ -1,6 +1,13 @@
 import mongoose from 'mongoose';
 
 const settingsSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+    unique: true,
+    index: true
+  },
   // UI Preferences
   theme: {
     type: String,
@@ -53,10 +60,10 @@ const settingsSchema = new mongoose.Schema({
 });
 
 // Static method to get or create settings
-settingsSchema.statics.getSettings = async function() {
-  let settings = await this.findOne();
+settingsSchema.statics.getSettings = async function(userId) {
+  let settings = await this.findOne({ userId });
   if (!settings) {
-    settings = await this.create({});
+    settings = await this.create({ userId });
   }
   return settings;
 };
