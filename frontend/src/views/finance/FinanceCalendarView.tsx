@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Plus, DollarSign, TrendingUp, TrendingDown, Clock, AlertCircle } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, TrendingUp, TrendingDown, Clock, AlertCircle } from 'lucide-react';
 import { Card } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../../components/ui/dialog';
@@ -23,8 +23,6 @@ interface DayData {
 export default function FinanceCalendarView() {
   const [currentDate, setCurrentDate] = useState(new Date());
   const [calendarDays, setCalendarDays] = useState<DayData[]>([]);
-  const [dueRecurring, setDueRecurring] = useState<RecurringTransaction[]>([]);
-  const [transactions, setTransactions] = useState<FinancialTransaction[]>([]);
   const [selectedDay, setSelectedDay] = useState<DayData | null>(null);
   const [showDayDialog, setShowDayDialog] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -51,8 +49,6 @@ export default function FinanceCalendarView() {
         })
       ]);
 
-      setDueRecurring(recurringData);
-      setTransactions(transactionsData.transactions);
       buildCalendar(recurringData, transactionsData.transactions);
     } catch (error) {
       console.error('Failed to load calendar data:', error);
@@ -115,13 +111,13 @@ export default function FinanceCalendarView() {
 
     // Find recurring transactions due on this day
     const dueBills = recurring.filter(r => {
-      if (!r.nextScheduledDate || r.type === 'income' || r.type === 'salary') return false;
+      if (!r.nextScheduledDate || r.type === 'income') return false;
       const dueDate = new Date(r.nextScheduledDate).toISOString().split('T')[0];
       return dueDate === dateStr;
     });
 
     const dueIncome = recurring.filter(r => {
-      if (!r.nextScheduledDate || (r.type !== 'income' && r.type !== 'salary')) return false;
+      if (!r.nextScheduledDate || r.type !== 'income') return false;
       const dueDate = new Date(r.nextScheduledDate).toISOString().split('T')[0];
       return dueDate === dateStr;
     });

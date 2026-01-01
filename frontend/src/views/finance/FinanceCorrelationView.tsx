@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import financeService from '../../services/financeService';
 import { Card } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
-import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import { TrendingDown, TrendingUp, Target, Heart, AlertCircle, Activity, ArrowDown, ArrowUp } from 'lucide-react';
 import type { CorrelationData } from '../../types/finance';
 import Header from '../../components/layout/Header';

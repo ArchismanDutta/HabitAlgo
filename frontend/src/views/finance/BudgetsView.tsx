@@ -6,7 +6,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Progress } from '../../components/ui/progress';
 import financeService from '../../services/financeService';
 import type { Budget, BudgetFormData, BudgetType, BudgetPeriod } from '../../types/finance';
 import { EXPENSE_CATEGORIES } from '../../types/finance';
@@ -36,10 +35,8 @@ export default function BudgetsView() {
 
   const [formData, setFormData] = useState<BudgetFormData>({
     type: 'category',
-    amount: 0,
-    period: 'monthly',
-    isActive: true,
-    allowRollover: false
+    limit: 0,
+    period: 'monthly'
   });
 
   useEffect(() => {
@@ -83,11 +80,12 @@ export default function BudgetsView() {
   const handleEdit = (budget: Budget) => {
     setEditingBudget(budget);
     setFormData({
+      name: budget.name,
       type: budget.type,
       category: budget.category,
       subcategory: budget.subcategory,
       merchant: budget.merchant,
-      amount: budget.amount,
+      limit: budget.limit,
       period: budget.period,
       startDate: budget.startDate,
       endDate: budget.endDate,
@@ -122,10 +120,8 @@ export default function BudgetsView() {
   const resetForm = () => {
     setFormData({
       type: 'category',
-      amount: 0,
-      period: 'monthly',
-      isActive: true,
-      allowRollover: false
+      limit: 0,
+      period: 'monthly'
     });
   };
 
@@ -468,13 +464,13 @@ export default function BudgetsView() {
             )}
 
             <div>
-              <Label htmlFor="amount">Budget Amount</Label>
+              <Label htmlFor="limit">Budget Amount</Label>
               <Input
-                id="amount"
+                id="limit"
                 type="number"
                 step="0.01"
-                value={formData.amount}
-                onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || 0 })}
+                value={formData.limit}
+                onChange={(e) => setFormData({ ...formData, limit: parseFloat(e.target.value) || 0 })}
                 required
               />
             </div>
@@ -522,7 +518,7 @@ export default function BudgetsView() {
               <input
                 type="checkbox"
                 id="allowRollover"
-                checked={formData.allowRollover}
+                checked={formData.allowRollover || false}
                 onChange={(e) => setFormData({ ...formData, allowRollover: e.target.checked })}
                 className="w-4 h-4"
               />

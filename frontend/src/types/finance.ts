@@ -172,10 +172,13 @@ export interface Budget {
   merchant?: string | null;
   period: BudgetPeriod;
   limit: number;
+  amount: number; // Same as limit - budget amount
   currentSpent: number;
+  spent: number; // Same as currentSpent - amount spent
   alertThreshold: number;
   alertSent: boolean;
   rolloverUnused: boolean;
+  allowRollover: boolean; // Same as rolloverUnused
   carryOver: number;
   startDate: string;
   endDate?: string | null;
@@ -319,7 +322,10 @@ export interface FinancialSummary {
   largestIncome?: LargestTransaction;
   expensesByDay: DayExpense[];
   paymentMethodBreakdown: PaymentMethodBreakdown[];
-  impulseSpending: ImpulseSpendingSummary;
+  // impulseSpending: number; // Total impulse spending amount
+  impulsePercentage: number; // Percentage of impulse spending
+  impulseSummary?: ImpulseSpendingSummary; // Alternative structure
+  impulseSpending?: number | ImpulseAnalysis;
   budgetAdherence: BudgetAdherenceSummary;
   accountBalances: AccountBalance[];
   netWorth: number;
@@ -334,6 +340,7 @@ export interface FinancialSummary {
 export interface CategoryBreakdown {
   category: string;
   amount: number;
+  total: number; // Same as amount
   count: number;
   avgAmount?: number;
 }
@@ -439,10 +446,10 @@ export interface HabitFinanceCorrelation {
   habitCategory: string;
   avgSpendingWhenCompleted: number;
   avgSpendingWhenNotCompleted: number;
-  spendingImpact: number; // Negative = saves money
+  spendingImpact: number;
   avgImpulseWhenCompleted: number;
   avgImpulseWhenNotCompleted: number;
-  impulseImpact: number; // Negative = less impulse
+  impulseImpact: number;
   completedDays: number;
   notCompletedDays: number;
   significance: 'low' | 'medium' | 'high';
@@ -548,17 +555,22 @@ export interface TransactionFormData {
 }
 
 export interface BudgetFormData {
-  name: string;
+  name?: string;
   type: BudgetType;
   category?: string;
   subcategory?: string | null;
   merchant?: string | null;
   period: BudgetPeriod;
   limit: number;
+  amount?: number; // Same as limit
   alertThreshold?: number;
   rolloverUnused?: boolean;
+  allowRollover?: boolean; // Same as rolloverUnused
+  startDate?: string;
+  endDate?: string | null;
   color?: string;
   icon?: string;
+  isActive?: boolean;
 }
 
 export interface RecurringFormData {
@@ -611,6 +623,8 @@ export interface FinanceApiResponse<T> {
   total?: number;
   message?: string;
   error?: string;
+  errors?: any[]; // For bulk operations
+  resetCount?: number; // For budget reset
 }
 
 // ============================================

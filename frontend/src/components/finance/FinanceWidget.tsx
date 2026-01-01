@@ -210,9 +210,16 @@ export default function FinanceWidget() {
                 High Impulse Spending Detected
               </p>
               <p className="text-sm text-orange-700 dark:text-orange-300 mt-1">
-                {summary.impulsePercentage.toFixed(1)}% of your spending this month was impulsive
-                ({formatCurrency(summary.impulseSpending)})
-              </p>
+  {summary.impulsePercentage.toFixed(1)}% of your spending this month was impulsive
+  (
+    {formatCurrency(
+      typeof summary.impulseSpending === 'number'
+        ? summary.impulseSpending
+        : summary.impulseSpending?.totalImpulse ?? 0
+    )}
+  )
+</p>
+
               <Link
                 to="/finance/analytics"
                 className="text-sm text-orange-600 hover:underline mt-2 inline-block"

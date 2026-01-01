@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import financeService from '../../services/financeService';
 import { Card } from '../../components/ui/card';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { TrendingUp, TrendingDown, Clock, Calendar, AlertCircle, ShoppingBag } from 'lucide-react';
+import { TrendingUp, Clock, Calendar, AlertCircle, ShoppingBag } from 'lucide-react';
 import type { SpendingTrend, CategoryBreakdown, DayOfWeekSpending, TimeOfDaySpending, ImpulseAnalysis, TopMerchant } from '../../types/finance';
 import Header from '../../components/layout/Header';
 
@@ -114,14 +114,14 @@ export default function FinanceAnalyticsView() {
             <PieChart>
               <Pie
                 data={categories.slice(0, 8)}
-                dataKey="total"
+                dataKey="amount"
                 nameKey="category"
                 cx="50%"
                 cy="50%"
                 outerRadius={100}
-                label={(entry) => `${entry.category.replace('_', ' ')} (${formatCurrency(entry.total)})`}
+                label={(entry) => `${entry.category.replace('_', ' ')} (${formatCurrency(entry.amount)})`}
               >
-                {categories.slice(0, 8).map((entry, index) => (
+                {categories.slice(0, 8).map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
@@ -137,20 +137,20 @@ export default function FinanceAnalyticsView() {
               <div key={cat.category}>
                 <div className="flex justify-between items-center mb-1">
                   <span className="text-sm capitalize">{cat.category.replace('_', ' ')}</span>
-                  <span className="text-sm font-medium">{formatCurrency(cat.total)}</span>
+                  <span className="text-sm font-medium">{formatCurrency(cat.amount)}</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                   <div
                     className="h-2 rounded-full"
                     style={{
-                      width: `${(cat.total / categories[0].total) * 100}%`,
+                      width: `${(cat.amount / categories[0].amount) * 100}%`,
                       backgroundColor: COLORS[index % COLORS.length]
                     }}
                   />
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground mt-1">
                   <span>{cat.count} transactions</span>
-                  <span>Avg: {formatCurrency(cat.total / cat.count)}</span>
+                  <span>Avg: {formatCurrency(cat.amount / cat.count)}</span>
                 </div>
               </div>
             ))}
@@ -251,7 +251,7 @@ export default function FinanceAnalyticsView() {
                     <p className="font-medium capitalize">{cat.category.replace('_', ' ')}</p>
                     <p className="text-sm text-muted-foreground">{cat.count} impulse purchases</p>
                   </div>
-                  <p className="text-lg font-bold text-orange-600">{formatCurrency(cat.total)}</p>
+                  <p className="text-lg font-bold text-orange-600">{formatCurrency(cat.amount)}</p>
                 </div>
               ))}
             </div>
@@ -316,7 +316,7 @@ export default function FinanceAnalyticsView() {
               <div>
                 <p className="font-medium">Top Spending Category</p>
                 <p className="text-sm text-muted-foreground">
-                  {categories[0].category.replace('_', ' ')} accounts for {formatCurrency(categories[0].total)} this month. Track it with a budget for better control.
+                  {categories[0].category.replace('_', ' ')} accounts for {formatCurrency(categories[0].amount)} this month. Track it with a budget for better control.
                 </p>
               </div>
             </div>
