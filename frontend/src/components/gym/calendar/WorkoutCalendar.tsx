@@ -140,7 +140,7 @@ export default function WorkoutCalendar({
     <Card className="transition-all hover:shadow-lg">
       <CardContent className="p-3 xxs:p-4 sm:p-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-3 xxs:mb-4 sm:mb-6">
+        <div className="flex items-center justify-between gap-2 sm:gap-3 mb-3 xxs:mb-4 sm:mb-6">
           <Button
             variant="outline"
             size="icon"
@@ -150,7 +150,7 @@ export default function WorkoutCalendar({
             <ChevronLeft className="h-4 w-4 xxs:h-5 xxs:w-5" />
           </Button>
 
-          <h3 className="text-base xxs:text-lg sm:text-xl font-bold">
+          <h3 className="text-sm xs:text-base sm:text-lg md:text-xl font-bold text-center min-w-0 flex-1 truncate">
             {getMonthName(currentMonth + 1)} {currentYear}
           </h3>
 

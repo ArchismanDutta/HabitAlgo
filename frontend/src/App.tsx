@@ -4,6 +4,15 @@ import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/components/ThemeProvider';
 import { syncService } from './services/syncService';
 import { SYNC_INTERVAL } from './utils/constants';
+import { useAuthStore } from '@/store/useAuthStore';
+import ProtectedRoute from '@/components/ProtectedRoute';
+
+// Auth Views
+import LoginView from './views/LoginView';
+import RegisterView from './views/RegisterView';
+import ProfileView from './views/ProfileView';
+import AdminView from './views/AdminView';
+import LandingView from './views/LandingView';
 
 // Views
 import TodayView from './views/TodayView';
@@ -24,12 +33,29 @@ import GymAnalyticsView from './views/gym/GymAnalyticsView';
 import GymCalendarView from './views/gym/GymCalendarView';
 import CorrelationsView from './views/gym/CorrelationsView';
 
+// Finance Views
+import FinanceDashboard from './views/finance/FinanceDashboard';
+import AccountsView from './views/finance/AccountsView';
+import TransactionsView from './views/finance/TransactionsView';
+import BudgetsView from './views/finance/BudgetsView';
+import FinanceCalendarView from './views/finance/FinanceCalendarView';
+import FinanceAnalyticsView from './views/finance/FinanceAnalyticsView';
+import FinanceCorrelationView from './views/finance/FinanceCorrelationView';
+import FinancialGoalsView from './views/finance/FinancialGoalsView';
+
 // Motivational Components
 import MissedHabitsChecker from './components/motivational/MissedHabitsChecker';
 
+// Finance Components
+import MissedSpendRecovery from './components/finance/MissedSpendRecovery';
+
 function App() {
-  // Set up auto-sync on mount
+  const { isAuthenticated } = useAuthStore();
+
+  // Set up auto-sync on mount (only for authenticated users)
   useEffect(() => {
+    if (!isAuthenticated) return;
+
     // Initial sync
     syncService.fullSync().catch(console.error);
 
@@ -49,37 +75,59 @@ function App() {
       clearInterval(syncInterval);
       window.removeEventListener('online', handleOnline);
     };
-  }, []);
+  }, [isAuthenticated]);
 
   return (
     <ThemeProvider defaultTheme="system" storageKey="habit-tracker-theme">
       <div className="min-h-screen bg-background text-foreground">
         <Routes>
-          <Route path="/" element={<Navigate to="/today" replace />} />
-          <Route path="/today" element={<TodayView />} />
-          <Route path="/grid" element={<GridView />} />
-          <Route path="/monthly" element={<MonthlyView />} />
-          <Route path="/analytics" element={<AnalyticsView />} />
-          <Route path="/enhanced-analytics" element={<EnhancedAnalyticsView />} />
-          <Route path="/focus" element={<FocusView />} />
+          {/* Public Routes */}
+          <Route path="/" element={isAuthenticated ? <Navigate to="/today" replace /> : <LandingView />} />
+          <Route path="/login" element={isAuthenticated ? <Navigate to="/today" replace /> : <LoginView />} />
+          <Route path="/register" element={isAuthenticated ? <Navigate to="/today" replace /> : <RegisterView />} />
+
+          {/* Protected Routes */}
+          <Route path="/profile" element={<ProtectedRoute><ProfileView /></ProtectedRoute>} />
+          <Route path="/today" element={<ProtectedRoute><TodayView /></ProtectedRoute>} />
+          <Route path="/grid" element={<ProtectedRoute><GridView /></ProtectedRoute>} />
+          <Route path="/monthly" element={<ProtectedRoute><MonthlyView /></ProtectedRoute>} />
+          <Route path="/analytics" element={<ProtectedRoute><AnalyticsView /></ProtectedRoute>} />
+          <Route path="/enhanced-analytics" element={<ProtectedRoute><EnhancedAnalyticsView /></ProtectedRoute>} />
+          <Route path="/focus" element={<ProtectedRoute><FocusView /></ProtectedRoute>} />
 
           {/* Gym Routes */}
-          <Route path="/gym" element={<GymDashboard />} />
-          <Route path="/gym/calendar" element={<GymCalendarView />} />
-          <Route path="/gym/programs" element={<ProgramsView />} />
-          <Route path="/gym/active-workout" element={<ActiveWorkoutView />} />
-          <Route path="/gym/exercises" element={<ExerciseLibraryView />} />
-          <Route path="/gym/metrics" element={<MetricsView />} />
-          <Route path="/gym/supplements" element={<SupplementsView />} />
-          <Route path="/gym/analytics" element={<GymAnalyticsView />} />
-          <Route path="/gym/correlations" element={<CorrelationsView />} />
+          <Route path="/gym" element={<ProtectedRoute><GymDashboard /></ProtectedRoute>} />
+          <Route path="/gym/calendar" element={<ProtectedRoute><GymCalendarView /></ProtectedRoute>} />
+          <Route path="/gym/programs" element={<ProtectedRoute><ProgramsView /></ProtectedRoute>} />
+          <Route path="/gym/active-workout" element={<ProtectedRoute><ActiveWorkoutView /></ProtectedRoute>} />
+          <Route path="/gym/exercises" element={<ProtectedRoute><ExerciseLibraryView /></ProtectedRoute>} />
+          <Route path="/gym/metrics" element={<ProtectedRoute><MetricsView /></ProtectedRoute>} />
+          <Route path="/gym/supplements" element={<ProtectedRoute><SupplementsView /></ProtectedRoute>} />
+          <Route path="/gym/analytics" element={<ProtectedRoute><GymAnalyticsView /></ProtectedRoute>} />
+          <Route path="/gym/correlations" element={<ProtectedRoute><CorrelationsView /></ProtectedRoute>} />
 
-          <Route path="*" element={<Navigate to="/today" replace />} />
+          {/* Finance Routes */}
+          <Route path="/finance" element={<ProtectedRoute><FinanceDashboard /></ProtectedRoute>} />
+          <Route path="/finance/accounts" element={<ProtectedRoute><AccountsView /></ProtectedRoute>} />
+          <Route path="/finance/transactions" element={<ProtectedRoute><TransactionsView /></ProtectedRoute>} />
+          <Route path="/finance/budgets" element={<ProtectedRoute><BudgetsView /></ProtectedRoute>} />
+          <Route path="/finance/goals" element={<ProtectedRoute><FinancialGoalsView /></ProtectedRoute>} />
+          <Route path="/finance/calendar" element={<ProtectedRoute><FinanceCalendarView /></ProtectedRoute>} />
+          <Route path="/finance/analytics" element={<ProtectedRoute><FinanceAnalyticsView /></ProtectedRoute>} />
+          <Route path="/finance/correlations" element={<ProtectedRoute><FinanceCorrelationView /></ProtectedRoute>} />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<ProtectedRoute adminOnly><AdminView /></ProtectedRoute>} />
+
+          <Route path="*" element={<Navigate to={isAuthenticated ? "/today" : "/"} replace />} />
         </Routes>
         <Toaster position="top-center" richColors />
 
-        {/* Motivational System */}
-        <MissedHabitsChecker />
+        {/* Motivational System - Only show for authenticated users */}
+        {isAuthenticated && <MissedHabitsChecker />}
+
+        {/* Finance Recovery System - Only show for authenticated users */}
+        {isAuthenticated && <MissedSpendRecovery />}
       </div>
     </ThemeProvider>
   );

@@ -41,7 +41,7 @@ export default function MonthlyView() {
         {/* Month Navigator */}
         <Card className="transition-all hover:shadow-lg">
           <CardHeader className="px-4 xxs:px-5 sm:px-6 py-4 xxs:py-5 sm:py-6">
-            <div className="flex items-center justify-between gap-3 xxs:gap-4">
+            <div className="flex items-center justify-between gap-2 sm:gap-3">
               <Button
                 variant="outline"
                 size="icon"
@@ -51,7 +51,7 @@ export default function MonthlyView() {
                 <ChevronLeft className="h-4 w-4 xxs:h-5 xxs:w-5" />
               </Button>
 
-              <CardTitle className="text-lg xxs:text-xl sm:text-2xl text-center">
+              <CardTitle className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl text-center min-w-0 flex-1 truncate">
                 {getMonthName(selectedMonth)} {selectedYear}
               </CardTitle>
 

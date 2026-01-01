@@ -7,12 +7,15 @@ import connectDB from './config/database.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
 
 // Import routes
+import authRoutes from './routes/auth.js';
+import adminRoutes from './routes/admin.js';
 import habitRoutes from './routes/habits.js';
 import logRoutes from './routes/logs.js';
 import analyticsRoutes from './routes/analytics.js';
 import settingsRoutes from './routes/settings.js';
 import syncRoutes from './routes/sync.js';
 import gymRoutes from './routes/gym.js';
+import financeRoutes from './routes/finance.js';
 
 // Load environment variables
 dotenv.config();
@@ -56,12 +59,15 @@ app.get('/', (req, res) => {
     endpoints: {
       health: '/health',
       api: '/api/v1',
+      auth: '/api/v1/auth',
+      admin: '/api/v1/admin',
       habits: '/api/v1/habits',
       logs: '/api/v1/logs',
       analytics: '/api/v1/analytics',
       settings: '/api/v1/settings',
       sync: '/api/v1/sync',
-      gym: '/api/v1/gym'
+      gym: '/api/v1/gym',
+      finance: '/api/v1/finance'
     },
     documentation: 'Visit /health for API status'
   });
@@ -79,12 +85,15 @@ app.get('/health', (req, res) => {
 // API Routes
 const API_PREFIX = '/api/v1';
 
+app.use(`${API_PREFIX}/auth`, authRoutes);
+app.use(`${API_PREFIX}/admin`, adminRoutes);
 app.use(`${API_PREFIX}/habits`, habitRoutes);
 app.use(`${API_PREFIX}/logs`, logRoutes);
 app.use(`${API_PREFIX}/analytics`, analyticsRoutes);
 app.use(`${API_PREFIX}/settings`, settingsRoutes);
 app.use(`${API_PREFIX}/sync`, syncRoutes);
 app.use(`${API_PREFIX}/gym`, gymRoutes);
+app.use(`${API_PREFIX}/finance`, financeRoutes);
 
 // Error handling
 app.use(notFound);

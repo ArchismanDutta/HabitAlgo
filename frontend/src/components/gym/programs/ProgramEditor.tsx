@@ -9,7 +9,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { gymProgramService } from '@/services/gymProgramService';
 import { exerciseService } from '@/services/exerciseService';
 import { toast } from 'sonner';
-import { Plus, Trash2, GripVertical, Search } from 'lucide-react';
+import { Plus, Trash2, GripVertical, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { WorkoutProgram, Exercise, ExerciseInProgram, ExerciseCategory } from '@/types/gym';
 
 interface ProgramEditorProps {
@@ -33,6 +34,12 @@ export default function ProgramEditor({ program, open, onOpenChange, onSuccess }
     exercises: [] as ExerciseInProgram[],
     scheduledDays: [] as number[]
   });
+
+  const [activeTab, setActiveTab] = useState(0);
+  const [direction, setDirection] = useState(0);
+
+  const tabs = ['details', 'exercises'];
+  const tabLabels = ['Details', `Exercises (${formData.exercises.length})`];
 
   useEffect(() => {
     if (program && open) {
@@ -62,6 +69,7 @@ export default function ProgramEditor({ program, open, onOpenChange, onSuccess }
       setExercises(data);
     } catch (error) {
       console.error('Failed to load exercises:', error);
+      toast.error('Failed to load exercises');
     }
   };
 
@@ -149,6 +157,19 @@ export default function ProgramEditor({ program, open, onOpenChange, onSuccess }
     }));
   };
 
+  const handleSwipe = (swipeDirection: number) => {
+    const newIndex = activeTab + swipeDirection;
+    if (newIndex >= 0 && newIndex < tabs.length) {
+      setDirection(swipeDirection);
+      setActiveTab(newIndex);
+    }
+  };
+
+  const handleDotClick = (index: number) => {
+    setDirection(index > activeTab ? 1 : -1);
+    setActiveTab(index);
+  };
+
   const days = [
     { value: 0, label: 'Sun' },
     { value: 1, label: 'Mon' },
@@ -163,6 +184,216 @@ export default function ProgramEditor({ program, open, onOpenChange, onSuccess }
   const colorOptions = ['#ff6b35', '#4ecdc4', '#45b7d1', '#f7b731', '#5f27cd', '#00d2d3', '#ee5a6f', '#c44569'];
   const categories: (ExerciseCategory | 'All')[] = ['All', 'Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core', 'Cardio'];
 
+  const renderDetailsTab = () => (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <Label htmlFor="name">Program Name *</Label>
+        <Input
+          id="name"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          placeholder="Push Day"
+          required
+        />
+      </div>
+
+      <div>
+        <Label htmlFor="description">Description (optional)</Label>
+        <Textarea
+          id="description"
+          value={formData.description}
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          placeholder="Chest, shoulders, triceps workout"
+          rows={2}
+        />
+      </div>
+
+      <div>
+        <Label>Icon</Label>
+        <div className="grid grid-cols-4 sm:flex gap-2 mt-2">
+          {iconOptions.map(icon => (
+            <button
+              key={icon}
+              type="button"
+              onClick={() => setFormData({ ...formData, icon })}
+              className={`min-h-[48px] text-2xl p-3 rounded-lg transition-all active:scale-95 ${
+                formData.icon === icon
+                  ? 'bg-orange-100 dark:bg-orange-900 scale-110'
+                  : 'bg-gray-100 dark:bg-gray-800 hover:scale-105'
+              }`}
+            >
+              {icon}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <Label>Color</Label>
+        <div className="grid grid-cols-4 sm:flex gap-2 mt-2">
+          {colorOptions.map(color => (
+            <button
+              key={color}
+              type="button"
+              onClick={() => setFormData({ ...formData, color })}
+              className={`min-w-[48px] min-h-[48px] w-full sm:w-10 sm:h-10 rounded-lg transition-all active:scale-95 ${
+                formData.color === color ? 'ring-2 ring-offset-2 ring-gray-400 scale-110' : ''
+              }`}
+              style={{ backgroundColor: color }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <Label>Schedule Days *</Label>
+        <div className="grid grid-cols-7 gap-1 sm:gap-2 mt-2">
+          {days.map(day => (
+            <button
+              key={day.value}
+              type="button"
+              onClick={() => toggleDay(day.value)}
+              className={`min-h-[44px] py-2 px-1 sm:px-3 rounded-lg font-medium text-xs sm:text-sm transition-all active:scale-95 ${
+                formData.scheduledDays.includes(day.value)
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-gray-100 dark:bg-gray-800'
+              }`}
+            >
+              {day.label}
+            </button>
+          ))}
+        </div>
+      </div>
+    </form>
+  );
+
+  const renderExercisesTab = () => (
+    <div className="grid grid-cols-1 gap-3 sm:gap-4">
+      {/* Program Exercises List */}
+      <div className="space-y-3">
+        <h3 className="font-semibold">Program Exercises</h3>
+        {formData.exercises.length === 0 ? (
+          <Card>
+            <CardContent className="pt-6 text-center py-8">
+              <p className="text-sm text-muted-foreground">No exercises added yet</p>
+              <p className="text-xs text-muted-foreground mt-1">Add from the exercise library →</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-2">
+            {formData.exercises.map((ex, index) => {
+              const exercise = exercises.find(e => e._id === (typeof ex.exerciseId === 'string' ? ex.exerciseId : ex.exerciseId._id));
+              const exerciseName = typeof ex.exerciseId === 'string' ? exercise?.name || 'Unknown' : ex.exerciseId.name;
+
+              return (
+                <Card key={index}>
+                  <CardContent className="pt-4 space-y-3">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center gap-2">
+                        <GripVertical className="h-4 w-4 text-muted-foreground" />
+                        <div>
+                          <p className="font-medium">{exerciseName}</p>
+                          <p className="text-xs text-muted-foreground">Exercise #{ex.order}</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeExercise(index)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                      <div>
+                        <Label className="text-xs">Target Sets</Label>
+                        <Input
+                          type="number"
+                          value={ex.plannedSets}
+                          onChange={(e) => updateExercise(index, { plannedSets: parseInt(e.target.value) })}
+                          min={1}
+                          className="h-10 sm:h-8"
+                          inputMode="numeric"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Target Reps</Label>
+                        <Input
+                          value={ex.plannedReps}
+                          onChange={(e) => updateExercise(index, { plannedReps: e.target.value })}
+                          placeholder="8-12"
+                          className="h-10 sm:h-8"
+                        />
+                      </div>
+                      <div>
+                        <Label className="text-xs">Rest (s)</Label>
+                        <Input
+                          type="number"
+                          value={ex.restTime}
+                          onChange={(e) => updateExercise(index, { restTime: parseInt(e.target.value) })}
+                          className="h-10 sm:h-8"
+                          inputMode="numeric"
+                        />
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Exercise Library */}
+      <div className="space-y-3">
+        <h3 className="font-semibold">Exercise Library</h3>
+
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search exercises..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
+        <div className="flex gap-1 overflow-x-auto pb-2 -mx-1 px-1">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategory(cat)}
+              className={`min-h-[40px] px-3 py-2 rounded-lg whitespace-nowrap text-xs sm:text-sm transition-all active:scale-95 ${
+                selectedCategory === cat
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-gray-100 dark:bg-gray-800'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div className="space-y-2 max-h-96 overflow-y-auto">
+          {exercises.map(exercise => (
+            <Card key={exercise._id} className="cursor-pointer hover:border-orange-500 transition-colors">
+              <CardContent className="pt-4" onClick={() => addExerciseToProgram(exercise)}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium text-sm">{exercise.name}</p>
+                    <p className="text-xs text-muted-foreground">{exercise.category}</p>
+                  </div>
+                  <Plus className="h-4 w-4 text-orange-500" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[95vw] sm:max-w-2xl lg:max-w-4xl max-h-[92vh] overflow-hidden flex flex-col p-3 sm:p-6">
@@ -170,222 +401,81 @@ export default function ProgramEditor({ program, open, onOpenChange, onSuccess }
           <DialogTitle className="text-lg sm:text-xl">{program ? 'Edit' : 'Create'} Workout Program</DialogTitle>
         </DialogHeader>
 
-        <Tabs defaultValue="details" className="flex-1 overflow-hidden flex flex-col">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="details" className="text-sm sm:text-base">Details</TabsTrigger>
-            <TabsTrigger value="exercises" className="text-sm sm:text-base">
-              <span className="hidden xs:inline">Exercises </span>({formData.exercises.length})
+        {/* Mobile: Swipeable View */}
+        <div className="sm:hidden flex-1 overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between mb-4">
+            <button
+              onClick={() => handleSwipe(-1)}
+              disabled={activeTab === 0}
+              className={`p-2 rounded-lg transition-colors ${
+                activeTab === 0
+                  ? 'text-muted-foreground/30 cursor-not-allowed'
+                  : 'text-foreground hover:bg-accent'
+              }`}
+            >
+              <ChevronLeft className="h-5 w-5" />
+            </button>
+
+            <h3 className="text-base font-semibold">{tabLabels[activeTab]}</h3>
+
+            <button
+              onClick={() => handleSwipe(1)}
+              disabled={activeTab === tabs.length - 1}
+              className={`p-2 rounded-lg transition-colors ${
+                activeTab === tabs.length - 1
+                  ? 'text-muted-foreground/30 cursor-not-allowed'
+                  : 'text-foreground hover:bg-accent'
+              }`}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </button>
+          </div>
+
+          <AnimatePresence mode="wait" initial={false} custom={direction}>
+            <motion.div
+              key={activeTab}
+              custom={direction}
+              initial={{ opacity: 0, x: direction > 0 ? 300 : -300 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: direction > 0 ? -300 : 300 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="overflow-y-auto flex-1"
+            >
+              {activeTab === 0 ? renderDetailsTab() : renderExercisesTab()}
+            </motion.div>
+          </AnimatePresence>
+
+          <div className="flex justify-center gap-1 mt-4">
+            {tabs.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => handleDotClick(index)}
+                className={`h-0.5 rounded-full transition-all ${
+                  index === activeTab
+                    ? 'w-3 bg-primary'
+                    : 'w-0.5 bg-muted-foreground/30'
+                }`}
+                aria-label={`Go to ${tabLabels[index]}`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop: Traditional Tabs */}
+        <Tabs defaultValue="details" className="flex-1 overflow-hidden flex-col hidden sm:flex">
+          <TabsList className="grid w-full grid-cols-2 mb-4">
+            <TabsTrigger value="details">Details</TabsTrigger>
+            <TabsTrigger value="exercises">
+              Exercises ({formData.exercises.length})
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="details" className="overflow-y-auto flex-1">
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <Label htmlFor="name">Program Name *</Label>
-                <Input
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="Push Day"
-                  required
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="description">Description (optional)</Label>
-                <Textarea
-                  id="description"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Chest, shoulders, triceps workout"
-                  rows={2}
-                />
-              </div>
-
-              <div>
-                <Label>Icon</Label>
-                <div className="grid grid-cols-4 sm:flex gap-2 mt-2">
-                  {iconOptions.map(icon => (
-                    <button
-                      key={icon}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, icon })}
-                      className={`min-h-[48px] text-2xl p-3 rounded-lg transition-all active:scale-95 ${
-                        formData.icon === icon
-                          ? 'bg-orange-100 dark:bg-orange-900 scale-110'
-                          : 'bg-gray-100 dark:bg-gray-800 hover:scale-105'
-                      }`}
-                    >
-                      {icon}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label>Color</Label>
-                <div className="grid grid-cols-4 sm:flex gap-2 mt-2">
-                  {colorOptions.map(color => (
-                    <button
-                      key={color}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, color })}
-                      className={`min-w-[48px] min-h-[48px] w-full sm:w-10 sm:h-10 rounded-lg transition-all active:scale-95 ${
-                        formData.color === color ? 'ring-2 ring-offset-2 ring-gray-400 scale-110' : ''
-                      }`}
-                      style={{ backgroundColor: color }}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <Label>Schedule Days *</Label>
-                <div className="grid grid-cols-7 gap-1 sm:gap-2 mt-2">
-                  {days.map(day => (
-                    <button
-                      key={day.value}
-                      type="button"
-                      onClick={() => toggleDay(day.value)}
-                      className={`min-h-[44px] py-2 px-1 sm:px-3 rounded-lg font-medium text-xs sm:text-sm transition-all active:scale-95 ${
-                        formData.scheduledDays.includes(day.value)
-                          ? 'bg-orange-500 text-white'
-                          : 'bg-gray-100 dark:bg-gray-800'
-                      }`}
-                    >
-                      {day.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </form>
+          <TabsContent value="details" className="overflow-y-auto flex-1 mt-0">
+            {renderDetailsTab()}
           </TabsContent>
 
-          <TabsContent value="exercises" className="overflow-y-auto flex-1 space-y-3 sm:space-y-4">
-            <div className="grid grid-cols-1 gap-3 sm:gap-4">
-              {/* Program Exercises List */}
-              <div className="space-y-3">
-                <h3 className="font-semibold">Program Exercises</h3>
-                {formData.exercises.length === 0 ? (
-                  <Card>
-                    <CardContent className="pt-6 text-center py-8">
-                      <p className="text-sm text-muted-foreground">No exercises added yet</p>
-                      <p className="text-xs text-muted-foreground mt-1">Add from the exercise library →</p>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  <div className="space-y-2">
-                    {formData.exercises.map((ex, index) => {
-                      const exercise = exercises.find(e => e._id === (typeof ex.exerciseId === 'string' ? ex.exerciseId : ex.exerciseId._id));
-                      const exerciseName = typeof ex.exerciseId === 'string' ? exercise?.name || 'Unknown' : ex.exerciseId.name;
-
-                      return (
-                        <Card key={index}>
-                          <CardContent className="pt-4 space-y-3">
-                            <div className="flex items-start justify-between">
-                              <div className="flex items-center gap-2">
-                                <GripVertical className="h-4 w-4 text-muted-foreground" />
-                                <div>
-                                  <p className="font-medium">{exerciseName}</p>
-                                  <p className="text-xs text-muted-foreground">Exercise #{ex.order}</p>
-                                </div>
-                              </div>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => removeExercise(index)}
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </div>
-
-                            <div className="grid grid-cols-3 gap-2">
-                              <div>
-                                <Label className="text-xs">Target Sets</Label>
-                                <Input
-                                  type="number"
-                                  value={ex.plannedSets}
-                                  onChange={(e) => updateExercise(index, { plannedSets: parseInt(e.target.value) })}
-                                  min={1}
-                                  className="h-10 sm:h-8"
-                                  inputMode="numeric"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-xs">Target Reps</Label>
-                                <Input
-                                  value={ex.plannedReps}
-                                  onChange={(e) => updateExercise(index, { plannedReps: e.target.value })}
-                                  placeholder="8-12"
-                                  className="h-10 sm:h-8"
-                                />
-                              </div>
-                              <div>
-                                <Label className="text-xs">Rest (s)</Label>
-                                <Input
-                                  type="number"
-                                  value={ex.restTime}
-                                  onChange={(e) => updateExercise(index, { restTime: parseInt(e.target.value) })}
-                                  className="h-10 sm:h-8"
-                                  inputMode="numeric"
-                                />
-                              </div>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-
-              {/* Exercise Library */}
-              <div className="space-y-3">
-                <h3 className="font-semibold">Exercise Library</h3>
-
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search exercises..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-
-                <div className="flex gap-1 overflow-x-auto pb-2 -mx-1 px-1">
-                  {categories.map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`min-h-[40px] px-3 py-2 rounded-lg whitespace-nowrap text-xs sm:text-sm transition-all active:scale-95 ${
-                        selectedCategory === cat
-                          ? 'bg-orange-500 text-white'
-                          : 'bg-gray-100 dark:bg-gray-800'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="space-y-2 max-h-96 overflow-y-auto">
-                  {exercises.map(exercise => (
-                    <Card key={exercise._id} className="cursor-pointer hover:border-orange-500 transition-colors">
-                      <CardContent className="pt-4" onClick={() => addExerciseToProgram(exercise)}>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium text-sm">{exercise.name}</p>
-                            <p className="text-xs text-muted-foreground">{exercise.category}</p>
-                          </div>
-                          <Plus className="h-4 w-4 text-orange-500" />
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </div>
-            </div>
+          <TabsContent value="exercises" className="overflow-y-auto flex-1 mt-0">
+            {renderExercisesTab()}
           </TabsContent>
         </Tabs>
 

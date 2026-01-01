@@ -65,6 +65,7 @@ export default function MoodWeatherTracker() {
       }
     } catch (error) {
       console.error('Failed to load tracking:', error);
+      toast.error('Failed to load tracking data');
     }
   };
 

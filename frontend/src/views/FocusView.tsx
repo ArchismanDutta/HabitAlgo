@@ -36,6 +36,7 @@ export default function FocusView() {
       }
     } catch (error) {
       console.error('Failed to load reflection:', error);
+      toast.error('Failed to load reflection data');
     }
   };
 

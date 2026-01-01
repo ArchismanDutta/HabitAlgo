@@ -211,7 +211,7 @@ export default function GridView() {
         <Card className="transition-all hover:shadow-lg">
           <CardHeader className="px-3 xxs:px-4 sm:px-6 py-3 xxs:py-4 sm:py-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 xxs:gap-4">
-              <div className="flex items-center gap-2 xxs:gap-3 sm:gap-4">
+              <div className="flex items-center justify-between sm:justify-start gap-2 sm:gap-3 w-full sm:w-auto">
                 <Button
                   variant="outline"
                   size="icon"
@@ -221,7 +221,7 @@ export default function GridView() {
                   <ChevronLeft className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 sm:h-5 sm:w-5" />
                 </Button>
 
-                <CardTitle className="text-base xxs:text-lg sm:text-xl md:text-2xl whitespace-nowrap">
+                <CardTitle className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl text-center min-w-0 flex-1 sm:flex-none truncate">
                   {getMonthName(selectedMonth)} {selectedYear}
                 </CardTitle>
 

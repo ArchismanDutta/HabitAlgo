@@ -1,10 +1,12 @@
-import { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Plus, Calendar, BarChart3, Target, Grid3x3, TrendingUp, CheckCircle2, Dumbbell } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Plus, Calendar, BarChart3, Target, Grid3x3, TrendingUp, CheckCircle2, Dumbbell, User, LogOut, Shield, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import HabitForm from '@/components/habits/HabitForm';
 import ThemeToggle from '@/components/ThemeToggle';
 import WeeklyReview from '@/components/reviews/WeeklyReview';
+import { useAuthStore } from '@/store/useAuthStore';
+import { toast } from 'sonner';
 
 interface HeaderProps {
   title?: string;
@@ -12,14 +14,42 @@ interface HeaderProps {
 
 export default function Header({ title }: HeaderProps) {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuthStore();
   const [showHabitForm, setShowHabitForm] = useState(false);
   const [showWeeklyReview, setShowWeeklyReview] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+
+  const handleLogout = () => {
+    logout();
+    toast.success('Logged out successfully');
+    navigate('/login');
+  };
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    if (showUserMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showUserMenu]);
 
   const navItems = [
     { path: '/today', label: 'Today', icon: Calendar },
     { path: '/grid', label: 'Grid', icon: Grid3x3 },
     { path: '/monthly', label: 'Monthly', icon: Calendar },
     { path: '/gym', label: 'Gym', icon: Dumbbell },
+    { path: '/finance', label: 'Finance', icon: Wallet },
     { path: '/analytics', label: 'Charts', icon: BarChart3 },
     { path: '/enhanced-analytics', label: 'Dashboard', icon: TrendingUp },
     { path: '/focus', label: 'Focus', icon: Target },
@@ -38,7 +68,8 @@ export default function Header({ title }: HeaderProps) {
             <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
               {navItems.map((item) => {
                 const isActive = location.pathname === item.path ||
-                  (item.path === '/gym' && location.pathname.startsWith('/gym'));
+                  (item.path === '/gym' && location.pathname.startsWith('/gym')) ||
+                  (item.path === '/finance' && location.pathname.startsWith('/finance'));
                 return (
                   <Link key={item.path} to={item.path}>
                     <Button
@@ -74,6 +105,67 @@ export default function Header({ title }: HeaderProps) {
               <Plus className="h-4 w-4" />
               <span className="hidden xs:inline text-xs sm:text-sm">New Habit</span>
             </Button>
+
+            {/* User Menu */}
+            <div className="relative" ref={userMenuRef}>
+              <Button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                size="sm"
+                variant="outline"
+                className="gap-1.5 h-9 px-2.5 xxs:px-3"
+              >
+                {user?.isAdmin ? <Shield className="h-4 w-4" /> : <User className="h-4 w-4" />}
+                <span className="hidden sm:inline text-xs">{user?.name}</span>
+              </Button>
+
+              {showUserMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-background border rounded-md shadow-lg z-50">
+                  <div className="p-3 border-b">
+                    <p className="text-sm font-medium">{user?.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+                    {user?.isAdmin && (
+                      <span className="inline-block mt-1 text-xs bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 px-2 py-0.5 rounded">
+                        Admin
+                      </span>
+                    )}
+                  </div>
+                  <div className="py-1">
+                    <button
+                      onClick={() => {
+                        navigate('/profile');
+                        setShowUserMenu(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-muted transition-colors flex items-center gap-2"
+                    >
+                      <User className="h-4 w-4" />
+                      Profile Settings
+                    </button>
+                    {user?.isAdmin && (
+                      <button
+                        onClick={() => {
+                          navigate('/admin');
+                          setShowUserMenu(false);
+                        }}
+                        className="w-full px-4 py-2 text-left text-sm hover:bg-muted transition-colors flex items-center gap-2"
+                      >
+                        <Shield className="h-4 w-4" />
+                        Admin Portal
+                      </button>
+                    )}
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setShowUserMenu(false);
+                      }}
+                      className="w-full px-4 py-2 text-left text-sm hover:bg-destructive/10 text-destructive transition-colors flex items-center gap-2"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      Logout
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
 

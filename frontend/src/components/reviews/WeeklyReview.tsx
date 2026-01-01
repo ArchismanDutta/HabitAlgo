@@ -110,6 +110,7 @@ export default function WeeklyReview({ open, onOpenChange }: WeeklyReviewProps) 
         setReflections(data);
       } catch (error) {
         console.error('Failed to load reflections:', error);
+        toast.error('Failed to load reflections');
       }
     }
   };

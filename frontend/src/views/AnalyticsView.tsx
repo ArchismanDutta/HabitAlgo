@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import Header from '@/components/layout/Header';
 import { ChevronLeft, ChevronRight, TrendingUp, Target, Flame } from 'lucide-react';
 import { getMonthName } from '@/utils/dateUtils';
+import { toast } from 'sonner';
 import {
   LineChart,
   Line,
@@ -38,6 +39,7 @@ export default function AnalyticsView() {
       setChartData(data);
     } catch (error) {
       console.error('Failed to load chart data:', error);
+      toast.error('Failed to load analytics data');
     } finally {
       setLoading(false);
     }
@@ -68,24 +70,27 @@ export default function AnalyticsView() {
       <div className="container max-w-6xl mx-auto p-4 space-y-6">
         {/* Month Navigator */}
         <Card>
-          <CardHeader>
-            <div className="flex items-center justify-between">
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex items-center justify-between gap-2 sm:gap-3">
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => navigateMonth('prev')}
+                className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
 
-              <CardTitle className="text-2xl">
-                {getMonthName(selectedMonth)} {selectedYear} Analytics
+              <CardTitle className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl text-center min-w-0 flex-1">
+                <span className="hidden sm:inline">{getMonthName(selectedMonth)} {selectedYear} Analytics</span>
+                <span className="sm:hidden truncate block">{getMonthName(selectedMonth)} {selectedYear}</span>
               </CardTitle>
 
               <Button
                 variant="outline"
                 size="icon"
                 onClick={() => navigateMonth('next')}
+                className="h-9 w-9 sm:h-10 sm:w-10 flex-shrink-0"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>

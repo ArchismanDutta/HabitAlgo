@@ -1,11 +1,19 @@
 import Dexie, { Table } from 'dexie';
 import { Habit, DailyLog, Settings, SyncQueueItem } from '@/types';
+import type { FinancialAccount, FinancialTransaction, Budget, RecurringTransaction, FinancialGoal } from '@/types/finance';
 
 export class HabitTrackerDB extends Dexie {
   habits!: Table<Habit, string>;
   dailyLogs!: Table<DailyLog, string>;
   syncQueue!: Table<SyncQueueItem, number>;
   settings!: Table<Settings, string>;
+
+  // Financial tables
+  financialAccounts!: Table<FinancialAccount, string>;
+  financialTransactions!: Table<FinancialTransaction, string>;
+  budgets!: Table<Budget, string>;
+  recurringTransactions!: Table<RecurringTransaction, string>;
+  financialGoals!: Table<FinancialGoal, string>;
 
   constructor() {
     super('HabitTrackerDB');
@@ -15,6 +23,19 @@ export class HabitTrackerDB extends Dexie {
       dailyLogs: '_id, date, habitId, [date+habitId]',
       syncQueue: '++id, type, timestamp, synced, entity',
       settings: '_id'
+    });
+
+    // Version 2: Add financial tables
+    this.version(2).stores({
+      habits: '_id, name, isActive, createdAt, category',
+      dailyLogs: '_id, date, habitId, [date+habitId]',
+      syncQueue: '++id, type, timestamp, synced, entity',
+      settings: '_id',
+      financialAccounts: '_id, userId, type, isActive, createdAt',
+      financialTransactions: '_id, userId, type, date, accountId, category, merchant, isImpulsive, [userId+date]',
+      budgets: '_id, userId, type, category, isActive',
+      recurringTransactions: '_id, userId, nextScheduledDate, isActive',
+      financialGoals: '_id, userId, type, isActive, isAchieved'
     });
   }
 }

@@ -147,48 +147,48 @@ export default function MetricsView() {
         {/* Current Stats */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Current Weight</p>
-                  <p className="text-3xl font-bold">{latestMetrics?.weight || '--'} kg</p>
+            <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Current Weight</p>
+                  <p className="text-2xl sm:text-3xl font-bold truncate">{latestMetrics?.weight || '--'} <span className="text-base sm:text-xl">kg</span></p>
                   {latestMetrics?.date && (
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-muted-foreground mt-1 truncate">
                       {new Date(latestMetrics.date).toLocaleDateString()}
                     </p>
                   )}
                 </div>
-                <Scale className="h-10 w-10 text-blue-500" />
+                <Scale className="h-8 w-8 sm:h-10 sm:w-10 text-blue-500 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Body Fat</p>
-                  <p className="text-3xl font-bold">{latestMetrics?.bodyFat || '--'}%</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+            <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Body Fat</p>
+                  <p className="text-2xl sm:text-3xl font-bold truncate">{latestMetrics?.bodyFat || '--'}<span className="text-base sm:text-xl">%</span></p>
+                  <p className="text-xs text-muted-foreground mt-1 truncate">
                     {latestMetrics?.bodyFat ? 'Latest' : 'Not tracked'}
                   </p>
                 </div>
-                <TrendingUp className="h-10 w-10 text-green-500" />
+                <TrendingUp className="h-8 w-8 sm:h-10 sm:w-10 text-green-500 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
 
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Target Weight</p>
-                  <p className="text-3xl font-bold">{activeGoal?.targetWeight || '--'} kg</p>
-                  <p className="text-xs text-muted-foreground mt-1">
+            <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+              <div className="flex items-center justify-between gap-2">
+                <div className="min-w-0 flex-1">
+                  <p className="text-xs sm:text-sm text-muted-foreground">Target Weight</p>
+                  <p className="text-2xl sm:text-3xl font-bold truncate">{activeGoal?.targetWeight || '--'} <span className="text-base sm:text-xl">kg</span></p>
+                  <p className="text-xs text-muted-foreground mt-1 truncate">
                     {activeGoal ? activeGoal.type.replace('_', ' ') : 'No goal set'}
                   </p>
                 </div>
-                <Target className="h-10 w-10 text-orange-500" />
+                <Target className="h-8 w-8 sm:h-10 sm:w-10 text-orange-500 flex-shrink-0" />
               </div>
             </CardContent>
           </Card>
@@ -196,11 +196,11 @@ export default function MetricsView() {
 
         {/* Add Weight */}
         <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              <span>Track Weight</span>
-              <Button size="sm" onClick={() => setShowAddWeight(!showAddWeight)}>
-                <Plus className="h-4 w-4 mr-2" />
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex flex-col xs:flex-row xs:items-center justify-between gap-2">
+              <span className="text-base sm:text-lg">Track Weight</span>
+              <Button size="sm" className="w-full xs:w-auto h-9 text-xs sm:text-sm" onClick={() => setShowAddWeight(!showAddWeight)}>
+                <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
                 Add Entry
               </Button>
             </CardTitle>
@@ -241,11 +241,11 @@ export default function MetricsView() {
         {/* Goal Progress or Create Goal */}
         {activeGoal ? (
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Goal Progress</span>
-                <Button size="sm" variant="outline" onClick={() => setShowGoalForm(!showGoalForm)}>
-                  <Edit className="h-4 w-4 mr-2" />
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="flex flex-col xs:flex-row xs:items-center justify-between gap-2">
+                <span className="text-base sm:text-lg">Goal Progress</span>
+                <Button size="sm" variant="outline" className="w-full xs:w-auto h-9 text-xs sm:text-sm" onClick={() => setShowGoalForm(!showGoalForm)}>
+                  <Edit className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
                   {showGoalForm ? 'Cancel' : 'Update Goal'}
                 </Button>
               </CardTitle>
@@ -368,11 +368,11 @@ export default function MetricsView() {
           </Card>
         ) : (
           <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center justify-between">
-                <span>Set Your Goal</span>
-                <Button size="sm" onClick={() => setShowGoalForm(!showGoalForm)}>
-                  <Plus className="h-4 w-4 mr-2" />
+            <CardHeader className="p-4 sm:p-6">
+              <CardTitle className="flex flex-col xs:flex-row xs:items-center justify-between gap-2">
+                <span className="text-base sm:text-lg">Set Your Goal</span>
+                <Button size="sm" className="w-full xs:w-auto h-9 text-xs sm:text-sm" onClick={() => setShowGoalForm(!showGoalForm)}>
+                  <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1.5 sm:mr-2" />
                   Create Goal
                 </Button>
               </CardTitle>
@@ -460,27 +460,27 @@ export default function MetricsView() {
 
         {/* Weight History */}
         <Card>
-          <CardHeader>
-            <CardTitle>Weight History (Last 90 Days)</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-base sm:text-lg">Weight History (Last 90 Days)</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6 pt-0">
             {metrics.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-sm text-muted-foreground">No entries yet</p>
+              <div className="text-center py-6 sm:py-8">
+                <p className="text-xs sm:text-sm text-muted-foreground">No entries yet</p>
                 <p className="text-xs text-muted-foreground mt-1">Start tracking your weight to see progress!</p>
               </div>
             ) : (
               <div className="space-y-2">
                 {metrics.slice(0, 10).map(metric => (
-                  <div key={metric._id} className="flex items-center justify-between p-3 border rounded-lg">
-                    <div>
-                      <p className="font-medium">{new Date(metric.date).toLocaleDateString()}</p>
-                      <p className="text-xs text-muted-foreground">
+                  <div key={metric._id} className="flex items-center justify-between gap-3 p-3 sm:p-4 border rounded-lg">
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-sm sm:text-base truncate">{new Date(metric.date).toLocaleDateString()}</p>
+                      <p className="text-xs text-muted-foreground truncate">
                         {metric.bodyFat && `Body Fat: ${metric.bodyFat}%`}
                       </p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-lg font-bold">{metric.weight} kg</p>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-base sm:text-lg font-bold">{metric.weight} kg</p>
                     </div>
                   </div>
                 ))}

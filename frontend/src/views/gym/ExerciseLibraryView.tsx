@@ -47,16 +47,17 @@ export default function ExerciseLibraryView() {
       <Header title="Exercise Library" />
 
       <div className="container mx-auto px-4 py-6 space-y-6">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
-            <h2 className="text-2xl font-bold">Exercise Library</h2>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h2 className="text-xl sm:text-2xl font-bold">Exercise Library</h2>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1">
               Browse {exercises.length} exercises
             </p>
           </div>
-          <Button>
+          <Button className="w-full sm:w-auto text-sm">
             <Plus className="h-4 w-4 mr-2" />
-            Add Custom Exercise
+            <span className="hidden xs:inline">Add Custom Exercise</span>
+            <span className="xs:hidden">Add Exercise</span>
           </Button>
         </div>
 
@@ -67,19 +68,19 @@ export default function ExerciseLibraryView() {
             placeholder="Search exercises..."
             value={searchQuery}
             onChange={(e) => handleSearch(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-10 sm:h-11 text-sm"
           />
         </div>
 
         {/* Category Filter */}
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-1 px-1 scrollbar-hide">
           {categories.map(category => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
+              className={`min-h-[40px] px-3 sm:px-4 py-2 rounded-lg whitespace-nowrap text-xs sm:text-sm font-medium transition-all active:scale-95 flex-shrink-0 ${
                 selectedCategory === category
-                  ? 'bg-orange-500 text-white'
+                  ? 'bg-orange-500 text-white shadow-md'
                   : 'bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700'
               }`}
             >
@@ -92,29 +93,29 @@ export default function ExerciseLibraryView() {
         {filteredExercises.length === 0 ? (
           <Card>
             <CardContent className="pt-6">
-              <div className="text-center py-12">
-                <Dumbbell className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Exercises Found</h3>
-                <p className="text-sm text-muted-foreground">
+              <div className="text-center py-8 sm:py-12 px-4">
+                <Dumbbell className="h-12 w-12 sm:h-16 sm:w-16 mx-auto text-muted-foreground mb-3 sm:mb-4" />
+                <h3 className="text-base sm:text-lg font-semibold mb-2">No Exercises Found</h3>
+                <p className="text-xs sm:text-sm text-muted-foreground">
                   Try a different search or category
                 </p>
               </div>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {filteredExercises.map(exercise => (
               <Card key={exercise._id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardContent className="pt-6">
-                  <div className="space-y-2">
-                    <div className="flex items-start justify-between">
-                      <h3 className="font-bold text-lg">{exercise.name}</h3>
+                <CardContent className="pt-4 sm:pt-6 p-3 sm:p-6">
+                  <div className="space-y-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <h3 className="font-bold text-base sm:text-lg line-clamp-2 flex-1">{exercise.name}</h3>
                       {exercise.isCustom && (
-                        <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded">Custom</span>
+                        <span className="text-xs bg-blue-500 text-white px-2 py-1 rounded flex-shrink-0">Custom</span>
                       )}
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-xs bg-orange-100 dark:bg-orange-900 text-orange-700 dark:text-orange-300 px-2 py-1 rounded">
                         {exercise.category}
                       </span>
@@ -125,23 +126,24 @@ export default function ExerciseLibraryView() {
                       )}
                     </div>
 
-                    <p className="text-sm text-muted-foreground">
+                    <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">
                       {exercise.muscleGroup.join(', ')}
                     </p>
 
                     {exercise.equipment && (
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-xs text-muted-foreground line-clamp-1">
                         Equipment: {exercise.equipment}
                       </p>
                     )}
 
-                    <div className="flex gap-2 pt-2">
-                      <Button variant="outline" size="sm" className="flex-1">
+                    <div className="flex flex-col xs:flex-row gap-2 pt-2">
+                      <Button variant="outline" size="sm" className="flex-1 h-9 text-xs sm:text-sm">
                         View Details
                       </Button>
-                      <Button size="sm" className="flex-1">
-                        <Plus className="h-4 w-4 mr-1" />
-                        Add to Program
+                      <Button size="sm" className="flex-1 h-9 text-xs sm:text-sm">
+                        <Plus className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        <span className="hidden xs:inline">Add to Program</span>
+                        <span className="xs:hidden">Add</span>
                       </Button>
                     </div>
                   </div>

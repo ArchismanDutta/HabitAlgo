@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Header from '@/components/layout/Header';
 import { correlationService, CorrelationData } from '@/services/correlationService';
+import { toast } from 'sonner';
 import {
   BarChart,
   Bar,
@@ -31,6 +32,7 @@ export default function CorrelationsView() {
       setData(correlationData);
     } catch (error) {
       console.error('Failed to load correlations:', error);
+      toast.error('Failed to load correlation data');
     } finally {
       setLoading(false);
     }

@@ -8,6 +8,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 import { Card, CardContent } from '@/components/ui/card';
 import { Lightbulb, Heart, Edit, TrendingUp, Flame, ChevronDown, ChevronUp } from 'lucide-react';
 import { useLogStore } from '@/store/useLogStore';
@@ -113,6 +114,7 @@ export default function HabitDetailModal({
       });
     } catch (error) {
       console.error('Failed to load stats:', error);
+      toast.error('Failed to load habit statistics');
     }
   };
 
