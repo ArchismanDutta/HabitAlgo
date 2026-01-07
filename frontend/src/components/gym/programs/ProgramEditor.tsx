@@ -88,11 +88,20 @@ export default function ProgramEditor({ program, open, onOpenChange, onSuccess }
 
     setSubmitting(true);
     try {
+      // Transform exercises to send only IDs to backend
+      const dataToSubmit = {
+        ...formData,
+        exercises: formData.exercises.map(ex => ({
+          ...ex,
+          exerciseId: typeof ex.exerciseId === 'string' ? ex.exerciseId : ex.exerciseId._id
+        }))
+      };
+
       if (program) {
-        await gymProgramService.update(program._id, formData);
+        await gymProgramService.update(program._id, dataToSubmit);
         toast.success('Program updated! 🎉');
       } else {
-        await gymProgramService.create(formData);
+        await gymProgramService.create(dataToSubmit);
         toast.success('Program created! 🎉');
       }
       onOpenChange(false);
@@ -115,7 +124,7 @@ export default function ProgramEditor({ program, open, onOpenChange, onSuccess }
     }
 
     const newExercise: ExerciseInProgram = {
-      exerciseId: exercise._id,
+      exerciseId: exercise, // Store full exercise object instead of just ID
       order: formData.exercises.length + 1,
       plannedSets: 3,
       plannedReps: '8-12',
@@ -282,8 +291,12 @@ export default function ProgramEditor({ program, open, onOpenChange, onSuccess }
         ) : (
           <div className="space-y-2">
             {formData.exercises.map((ex, index) => {
-              const exercise = exercises.find(e => e._id === (typeof ex.exerciseId === 'string' ? ex.exerciseId : ex.exerciseId._id));
-              const exerciseName = typeof ex.exerciseId === 'string' ? exercise?.name || 'Unknown' : ex.exerciseId.name;
+              // exerciseId is now always an Exercise object
+              const exerciseData = typeof ex.exerciseId === 'string'
+                ? exercises.find(e => e._id === ex.exerciseId)
+                : ex.exerciseId;
+              const exerciseName = exerciseData?.name || 'Unknown Exercise';
+              const exerciseCategory = exerciseData?.category || '';
 
               return (
                 <Card key={index}>
@@ -293,7 +306,9 @@ export default function ProgramEditor({ program, open, onOpenChange, onSuccess }
                         <GripVertical className="h-4 w-4 text-muted-foreground" />
                         <div>
                           <p className="font-medium">{exerciseName}</p>
-                          <p className="text-xs text-muted-foreground">Exercise #{ex.order}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {exerciseCategory} • Exercise #{ex.order}
+                          </p>
                         </div>
                       </div>
                       <Button
