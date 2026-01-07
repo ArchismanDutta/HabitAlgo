@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import type { MetricTrendData } from '@/types/gym';
-import { Activity, TrendingUp, TrendingDown, AlertCircle } from 'lucide-react';
+import {TrendingUp, TrendingDown} from 'lucide-react';
 
 interface Props {
   trendData: MetricTrendData;

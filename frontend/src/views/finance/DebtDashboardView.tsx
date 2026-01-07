@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useDebtStore } from '@/store/useDebtStore';
 import Header from '@/components/layout/Header';
+
 import {
   Plus,
   TrendingDown,
@@ -12,6 +13,7 @@ import {
   PieChart as PieChartIcon,
   CreditCard
 } from 'lucide-react';
+
 import AddDebtDialog from '@/components/finance/debt/AddDebtDialog';
 import DebtPaymentDialog from '@/components/finance/debt/DebtPaymentDialog';
 import DebtCard from '@/components/finance/debt/DebtCard';
@@ -20,7 +22,7 @@ import PayoffProgressChart from '@/components/finance/debt/PayoffProgressChart';
 
 export default function DebtDashboardView() {
   const {
-    debts,
+    debts = [],
     debtSummary,
     debtBreakdown,
     payoffProgress,
@@ -34,19 +36,6 @@ export default function DebtDashboardView() {
   useEffect(() => {
     refreshAll();
   }, [refreshAll]);
-
-  /**
-   * 🔒 HARD DATA SANITIZATION
-   * If your backend or store sends junk,
-   * your UI will NOT crash.
-   */
-  const safeDebts = useMemo(() => {
-    if (!Array.isArray(debts)) return [];
-    return debts.filter(
-      (d): d is { _id: string } =>
-        Boolean(d && typeof d === 'object' && '_id' in d)
-    );
-  }, [debts]);
 
   const handleAddPayment = (debtId: string) => {
     setSelectedDebtId(debtId);
@@ -124,7 +113,7 @@ export default function DebtDashboardView() {
 
           {/* List */}
           <TabsContent value="list" className="mt-6">
-            {safeDebts.length === 0 ? (
+            {debts.length === 0 ? (
               <Card>
                 <CardContent className="py-12 text-center">
                   <CreditCard className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
@@ -135,7 +124,7 @@ export default function DebtDashboardView() {
               </Card>
             ) : (
               <div className="space-y-4">
-                {safeDebts.map(debt => (
+                {debts.map(debt => (
                   <DebtCard
                     key={debt._id}
                     debt={debt}

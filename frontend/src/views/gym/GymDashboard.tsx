@@ -7,7 +7,7 @@ import { useWorkoutStore } from '@/store/useWorkoutStore';
 import { useMetricsStore } from '@/store/useMetricsStore';
 import { useSupplementStore } from '@/store/useSupplementStore';
 import Header from '@/components/layout/Header';
-import { Dumbbell, Calendar, TrendingUp, Trophy, Plus, Brain, Activity, Play, CheckCircle, Clock } from 'lucide-react';
+import { Dumbbell, Calendar, TrendingUp, Trophy, Plus, Activity, Play, CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import ProgramEditor from '@/components/gym/programs/ProgramEditor';
 import ProgramDetailsDialog from '@/components/gym/programs/ProgramDetailsDialog';
