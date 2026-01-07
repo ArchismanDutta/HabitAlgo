@@ -8,7 +8,7 @@ export const getExercises = async (req, res) => {
     const query = {
       $or: [
         { isCustom: false }, // System exercises
-        { isCustom: true, userId: req.user?._id || 'default-user' } // User's custom exercises
+        { isCustom: true, userId: req.user._id } // User's custom exercises
       ]
     };
 
@@ -64,7 +64,7 @@ export const createExercise = async (req, res) => {
     const exercise = await Exercise.create({
       ...req.body,
       isCustom: true,
-      userId: req.user?._id || 'default-user'
+      userId: req.user._id
     });
 
     res.status(201).json({
@@ -84,7 +84,7 @@ export const updateExercise = async (req, res) => {
   try {
     const exercise = await Exercise.findOne({
       _id: req.params.id,
-      userId: req.user?._id || 'default-user',
+      userId: req.user._id,
       isCustom: true
     });
 
@@ -115,7 +115,7 @@ export const deleteExercise = async (req, res) => {
   try {
     const exercise = await Exercise.findOneAndDelete({
       _id: req.params.id,
-      userId: req.user?._id || 'default-user',
+      userId: req.user._id,
       isCustom: true
     });
 

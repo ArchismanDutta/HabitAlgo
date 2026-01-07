@@ -154,7 +154,9 @@ export default function CorrelationsView() {
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={data.habitCorrelations} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis type="number" />
+                  <XAxis type="num
+                  
+                  ber" />
                   <YAxis type="category" dataKey="habitName" width={90} />
                   <Tooltip />
                   <Bar dataKey="volumeImpact">

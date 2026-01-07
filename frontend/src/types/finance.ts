@@ -674,3 +674,138 @@ export const TRANSACTION_COLORS = {
   withdrawal: '#6366f1',
   deposit: '#06b6d4'
 } as const;
+
+// ============================================
+// DEBT TYPES
+// ============================================
+
+export type DebtType =
+  | 'mortgage'
+  | 'personal_loan'
+  | 'student_loan'
+  | 'business_loan'
+  | 'credit_card'
+  | 'car_loan'
+  | 'other';
+
+export type DebtStatus =
+  | 'active'
+  | 'paid_off'
+  | 'paused'
+  | 'defaulted';
+
+export interface DebtPayment {
+  _id: string;
+  paymentDate: string; // "YYYY-MM-DD"
+  amount: number;
+  principalPaid: number;
+  interestPaid: number;
+  remainingBalance: number;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Debt {
+  _id: string;
+  userId: string;
+  debtName: string;
+  debtType: DebtType;
+  originalAmount: number;
+  currentBalance: number;
+  interestRate: number; // Annual percentage rate
+  monthlyPayment: number;
+  minimumPayment?: number;
+  startDate: string; // "YYYY-MM-DD"
+  dueDate: number; // Day of month (1-31)
+  endDate?: string | null; // "YYYY-MM-DD"
+  term?: number | null; // Term in months
+  status: DebtStatus;
+  accountId?: string | null; // Link to FinancialAccount
+  totalPaid: number;
+  totalInterestPaid: number;
+  totalPrincipalPaid: number;
+  paymentsHistory: DebtPayment[];
+  lenderName?: string;
+  accountNumber?: string;
+  notes?: string;
+  color: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  // Virtuals
+  amountPaid?: number;
+  payoffPercentage?: number;
+  remainingPercentage?: number;
+  monthlyInterest?: number;
+  estimatedPayoffMonths?: number;
+}
+
+export interface DebtFormData {
+  debtName: string;
+  debtType: DebtType;
+  originalAmount: number;
+  interestRate: number;
+  monthlyPayment: number;
+  minimumPayment?: number;
+  startDate: string;
+  dueDate: number;
+  term?: number | null;
+  lenderName?: string;
+  notes?: string;
+  color?: string;
+}
+
+export interface DebtPaymentFormData {
+  amount: number;
+  paymentDate: string;
+  notes?: string;
+}
+
+export interface DebtSummary {
+  totalDebts: number;
+  runningDebts: number;
+  initialBalance: number;
+  currentBalance: number;
+  totalPaid: number;
+  paymentProgress: number; // Percentage
+}
+
+export interface DebtBreakdown {
+  type: DebtType;
+  totalOriginal: number;
+  totalCurrent: number;
+  count: number;
+}
+
+export interface DebtPayoffProgress {
+  type: DebtType;
+  originalAmount: number;
+  currentBalance: number;
+  payoffPercentage: number;
+}
+
+export interface DebtProjection {
+  debtName: string;
+  currentBalance: number;
+  monthlyPayment: number;
+  interestRate: number;
+  estimatedPayoffMonths: number;
+  projection: Array<{
+    month: number;
+    payment: number;
+    principal: number;
+    interest: number;
+    remainingBalance: number;
+  }>;
+}
+
+export const DEBT_TYPES: { value: DebtType; label: string; color: string }[] = [
+  { value: 'mortgage', label: 'Mortgage Loan', color: '#10b981' },
+  { value: 'personal_loan', label: 'Personal Loan', color: '#3b82f6' },
+  { value: 'student_loan', label: 'Student Loan', color: '#8b5cf6' },
+  { value: 'business_loan', label: 'Business Loan', color: '#f59e0b' },
+  { value: 'credit_card', label: 'Credit Card Debt', color: '#ef4444' },
+  { value: 'car_loan', label: 'Car Loan', color: '#06b6d4' },
+  { value: 'other', label: 'Other Debt', color: '#6b7280' }
+];

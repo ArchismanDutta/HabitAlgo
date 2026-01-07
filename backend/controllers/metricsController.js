@@ -6,7 +6,7 @@ import BodyGoal from '../models/BodyGoal.js';
 // Create or update body metrics for a date
 export const upsertMetrics = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const metrics = await BodyMetrics.findOneAndUpdate(
       { userId, date: req.body.date },
@@ -37,7 +37,7 @@ export const upsertMetrics = async (req, res) => {
 // Get metrics by date range
 export const getMetrics = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
     const { startDate, endDate } = req.query;
 
     const query = { userId };
@@ -63,7 +63,7 @@ export const getMetrics = async (req, res) => {
 // Get latest metrics
 export const getLatestMetrics = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const metrics = await BodyMetrics.findOne({
       userId
@@ -84,7 +84,7 @@ export const getLatestMetrics = async (req, res) => {
 // Delete metrics
 export const deleteMetrics = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const metrics = await BodyMetrics.findOneAndDelete({
       _id: req.params.id,
@@ -115,7 +115,7 @@ export const deleteMetrics = async (req, res) => {
 // Create goal
 export const createGoal = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     // Deactivate existing active goals
     await BodyGoal.updateMany(
@@ -145,7 +145,7 @@ export const createGoal = async (req, res) => {
 // Get goals
 export const getGoals = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
     const { active } = req.query;
 
     const query = { userId };
@@ -171,7 +171,7 @@ export const getGoals = async (req, res) => {
 // Get active goal
 export const getActiveGoal = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const goal = await BodyGoal.findOne({
       userId,
@@ -193,7 +193,7 @@ export const getActiveGoal = async (req, res) => {
 // Update goal
 export const updateGoal = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const goal = await BodyGoal.findOneAndUpdate(
       { _id: req.params.id, userId },
@@ -223,7 +223,7 @@ export const updateGoal = async (req, res) => {
 // Delete goal
 export const deleteGoal = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const goal = await BodyGoal.findOneAndDelete({
       _id: req.params.id,

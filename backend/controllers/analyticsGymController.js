@@ -6,7 +6,7 @@ import BodyMetrics from '../models/BodyMetrics.js';
 export const getVolumeAnalytics = async (req, res) => {
   try {
     const { period = 'month', startDate, endDate } = req.query;
-    const userId = 'default-user'; // TODO: Replace with actual user ID from auth
+    const userId = req.user._id;
 
     let start = new Date();
     let end = new Date();
@@ -77,7 +77,7 @@ export const getVolumeAnalytics = async (req, res) => {
 export const getPersonalRecords = async (req, res) => {
   try {
     const { exerciseId, type } = req.query;
-    const userId = 'default-user'; // TODO: Replace with actual user ID from auth
+    const userId = req.user._id;
 
     const query = { userId };
     if (exerciseId) query.exerciseId = exerciseId;
@@ -119,7 +119,7 @@ export const getExerciseProgress = async (req, res) => {
   try {
     const { exerciseId } = req.params;
     const { limit = 20 } = req.query;
-    const userId = 'default-user'; // TODO: Replace with actual user ID from auth
+    const userId = req.user._id;
 
     const sessions = await WorkoutSession.find({
       userId,
@@ -165,7 +165,7 @@ export const getExerciseProgress = async (req, res) => {
 export const getProgressSummary = async (req, res) => {
   try {
     const { days = 30 } = req.query;
-    const userId = 'default-user'; // TODO: Replace with actual user ID from auth
+    const userId = req.user._id;
 
     const startDate = new Date();
     startDate.setDate(startDate.getDate() - parseInt(days));
@@ -235,7 +235,7 @@ export const getProgressSummary = async (req, res) => {
 // Get strength comparison (compare performance across time periods)
 export const getStrengthComparison = async (req, res) => {
   try {
-    const userId = 'default-user'; // TODO: Replace with actual user ID from auth
+    const userId = req.user._id;
 
     const now = new Date();
     const thisWeekStart = new Date(now);

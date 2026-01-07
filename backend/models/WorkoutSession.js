@@ -62,6 +62,16 @@ const exercisePerformanceSchema = new mongoose.Schema({
     type: String,
     enum: ['low', 'normal', 'high', 'extra_power']
   },
+  // Substitution tracking
+  isSubstitute: {
+    type: Boolean,
+    default: false
+  },
+  substitutedFor: {
+    exerciseId: String,
+    exerciseName: String,
+    reason: String // e.g., "Equipment unavailable", "Injury", "Personal preference"
+  },
   // Optional reference values from program (guidelines only)
   plannedSets: {
     type: Number
@@ -122,6 +132,30 @@ const workoutSessionSchema = new mongoose.Schema({
   totalVolume: {
     type: Number, // Total weight lifted (weight × reps)
     default: 0
+  },
+  completionStats: {
+    exercisesCompleted: {
+      type: Number,
+      default: 0
+    },
+    exercisesPlanned: {
+      type: Number,
+      default: 0
+    },
+    setsCompleted: {
+      type: Number,
+      default: 0
+    },
+    setsPlanned: {
+      type: Number,
+      default: 0
+    },
+    completionPercentage: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100
+    }
   },
   notes: {
     type: String,

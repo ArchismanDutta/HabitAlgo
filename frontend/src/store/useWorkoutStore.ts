@@ -14,6 +14,8 @@ interface WorkoutStore {
   logSet: (sessionId: string, exerciseId: string, setData: SetPerformance) => Promise<void>;
   completeWorkout: (sessionId: string) => Promise<void>;
   cancelWorkout: () => void;
+  substituteExercise: (sessionId: string, originalExerciseId: string, newExerciseId: string, newExerciseName: string, reason?: string) => Promise<void>;
+  fetchTodayActiveSession: () => Promise<void>;
 
   // History
   fetchSessionHistory: (params?: { startDate?: string; endDate?: string; programId?: string }) => Promise<void>;
@@ -73,15 +75,12 @@ export const useWorkoutStore = create<WorkoutStore>((set, get) => ({
 
       updatedExercises[exerciseIndex] = exercise;
 
-      await workoutSessionService.update(sessionId, {
+      const updatedSession = await workoutSessionService.update(sessionId, {
         exercises: updatedExercises
       });
 
       set({
-        activeSession: {
-          ...activeSession,
-          exercises: updatedExercises
-        }
+        activeSession: updatedSession
       });
     } catch (error: any) {
       set({ error: error.message });
@@ -106,6 +105,33 @@ export const useWorkoutStore = create<WorkoutStore>((set, get) => ({
 
   cancelWorkout: () => {
     set({ activeSession: null });
+  },
+
+  substituteExercise: async (sessionId: string, originalExerciseId: string, newExerciseId: string, newExerciseName: string, reason?: string) => {
+    set({ loading: true, error: null });
+    try {
+      const updatedSession = await workoutSessionService.substituteExercise(sessionId, {
+        originalExerciseId,
+        newExerciseId,
+        newExerciseName,
+        reason
+      });
+      set({ activeSession: updatedSession, loading: false });
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+      throw error;
+    }
+  },
+
+  fetchTodayActiveSession: async () => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+      const sessions = await workoutSessionService.getByDateRange(today, today);
+      const activeSession = sessions.find(s => !s.completed);
+      set({ activeSession: activeSession || null });
+    } catch (error: any) {
+      set({ error: error.message });
+    }
   },
 
   fetchSessionHistory: async (params?: { startDate?: string; endDate?: string }) => {

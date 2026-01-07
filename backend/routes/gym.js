@@ -20,7 +20,8 @@ import {
   completeSession,
   getSessions,
   getSession,
-  deleteSession
+  deleteSession,
+  substituteExercise
 } from '../controllers/workoutSessionController.js';
 import {
   upsertMetrics,
@@ -55,6 +56,17 @@ import {
 import {
   getHabitGymCorrelation
 } from '../controllers/correlationController.js';
+import {
+  createHealthReport,
+  updateHealthReport,
+  getHealthReports,
+  getHealthReport,
+  getLatestHealthReport,
+  deleteHealthReport,
+  getMetricTrend,
+  getAvailableMetrics,
+  getLatestReportSummary
+} from '../controllers/healthReportController.js';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -83,6 +95,7 @@ router.get('/sessions', getSessions);
 router.get('/sessions/:id', getSession);
 router.put('/sessions/:id', updateSession);
 router.post('/sessions/:id/complete', completeSession);
+router.post('/sessions/:sessionId/substitute-exercise', substituteExercise);
 router.delete('/sessions/:id', deleteSession);
 
 // ===== BODY METRICS =====
@@ -119,5 +132,18 @@ router.get('/analytics/exercise/:exerciseId', getExerciseProgress);
 router.get('/analytics/progress', getProgressSummary);
 router.get('/analytics/comparison', getStrengthComparison);
 router.get('/analytics/correlations', getHabitGymCorrelation);
+
+// ===== HEALTH REPORTS =====
+router.post('/health-reports', createHealthReport);
+router.get('/health-reports', getHealthReports);
+router.get('/health-reports/latest', getLatestHealthReport);
+router.get('/health-reports/summary', getLatestReportSummary);
+router.get('/health-reports/:id', getHealthReport);
+router.put('/health-reports/:id', updateHealthReport);
+router.delete('/health-reports/:id', deleteHealthReport);
+
+// ===== HEALTH ANALYTICS =====
+router.get('/health-analytics/metrics', getAvailableMetrics);
+router.get('/health-analytics/trend', getMetricTrend);
 
 export default router;

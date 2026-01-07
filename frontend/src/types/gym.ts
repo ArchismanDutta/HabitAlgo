@@ -73,6 +73,13 @@ export interface ExercisePerformance {
   completed: boolean;
   notes?: string;
   energy?: EnergyLevel;
+  // Substitution tracking
+  isSubstitute?: boolean;
+  substitutedFor?: {
+    exerciseId: string;
+    exerciseName: string;
+    reason?: string;
+  };
   // Optional reference values from the program (as guidelines only)
   plannedSets?: number;
   plannedReps?: string;
@@ -94,6 +101,13 @@ export interface WorkoutSession {
   overallEnergy: EnergyLevel;
   bodyWeight?: number;
   totalVolume: number;
+  completionStats?: {
+    exercisesCompleted: number;
+    exercisesPlanned: number;
+    setsCompleted: number;
+    setsPlanned: number;
+    completionPercentage: number;
+  };
   notes?: string;
   createdAt: Date;
   updatedAt: Date;
@@ -212,6 +226,83 @@ export interface SupplementAdherence {
   totalExpected: number;
   takenCount: number;
   adherenceRate: number;
+}
+
+// ===== HEALTH REPORTS =====
+
+export type HealthMetricCategory =
+  | 'hormone'
+  | 'vitamin'
+  | 'mineral'
+  | 'blood_marker'
+  | 'liver'
+  | 'kidney'
+  | 'thyroid'
+  | 'other';
+
+export type HealthMetricStatus = 'low' | 'normal' | 'high';
+
+export interface ReferenceRange {
+  min: number;
+  max: number;
+  unit: string;
+}
+
+export interface HealthMetric {
+  category: HealthMetricCategory;
+  name: string;
+  value: number;
+  unit: string;
+  referenceRange: ReferenceRange;
+  status: HealthMetricStatus;
+  notes?: string;
+}
+
+export interface HealthReport {
+  _id: string;
+  userId: string;
+  reportDate: string; // "YYYY-MM-DD"
+  reportName?: string;
+  labName?: string;
+  metrics: HealthMetric[];
+  overallNotes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface HealthReportFormData {
+  reportDate: string;
+  reportName?: string;
+  labName?: string;
+  metrics: Omit<HealthMetric, 'status'>[];
+  overallNotes?: string;
+}
+
+export interface MetricTrend {
+  date: string;
+  value: number;
+  unit: string;
+  status: HealthMetricStatus;
+  referenceRange: ReferenceRange;
+}
+
+export interface MetricTrendData {
+  metricName: string;
+  trend: MetricTrend[];
+  latestValue?: MetricTrend;
+  change: number;
+}
+
+export interface HealthReportSummary {
+  reportDate: string;
+  reportName: string;
+  totalMetrics: number;
+  statusSummary: {
+    low: number;
+    normal: number;
+    high: number;
+  };
+  daysAgo: number;
 }
 
 // ===== API RESPONSES =====

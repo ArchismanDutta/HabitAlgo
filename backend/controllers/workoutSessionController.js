@@ -5,7 +5,7 @@ import WorkoutProgram from '../models/WorkoutProgram.js';
 // Start new workout session
 export const startSession = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
     const { programId, date } = req.body;
 
     // Fetch the program to get its details
@@ -43,7 +43,14 @@ export const startSession = async (req, res) => {
       completed: false,
       exercises,
       overallEnergy: 'normal',
-      totalVolume: 0
+      totalVolume: 0,
+      completionStats: {
+        exercisesCompleted: 0,
+        exercisesPlanned: exercises.length,
+        setsCompleted: 0,
+        setsPlanned: exercises.reduce((sum, ex) => sum + (ex.plannedSets || 3), 0),
+        completionPercentage: 0
+      }
     });
 
     res.status(201).json({
@@ -61,7 +68,7 @@ export const startSession = async (req, res) => {
 // Update workout session (log sets, exercises)
 export const updateSession = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const session = await WorkoutSession.findOneAndUpdate(
       { _id: req.params.id, userId },
@@ -86,6 +93,10 @@ export const updateSession = async (req, res) => {
       });
     });
     session.totalVolume = totalVolume;
+
+    // Calculate completion stats
+    session.completionStats = calculateCompletionStats(session);
+
     await session.save();
 
     res.json({
@@ -103,7 +114,7 @@ export const updateSession = async (req, res) => {
 // Complete workout session
 export const completeSession = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const session = await WorkoutSession.findOne({
       _id: req.params.id,
@@ -125,6 +136,9 @@ export const completeSession = async (req, res) => {
       session.duration = Math.round((session.endTime - session.startTime) / 1000 / 60);
     }
 
+    // Calculate final completion stats
+    session.completionStats = calculateCompletionStats(session);
+
     await session.save();
 
     // Check for new personal records
@@ -145,7 +159,7 @@ export const completeSession = async (req, res) => {
 // Get sessions by date range
 export const getSessions = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
     const { startDate, endDate, date } = req.query;
 
     const query = { userId };
@@ -174,7 +188,7 @@ export const getSessions = async (req, res) => {
 // Get single session
 export const getSession = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const session = await WorkoutSession.findOne({
       _id: req.params.id,
@@ -203,7 +217,7 @@ export const getSession = async (req, res) => {
 // Delete session
 export const deleteSession = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const session = await WorkoutSession.findOneAndDelete({
       _id: req.params.id,
@@ -316,5 +330,121 @@ async function checkForPRs(session) {
         notes: 'New volume PR! 📈'
       });
     }
+  }
+}
+
+// Helper function to calculate completion statistics
+function calculateCompletionStats(session) {
+  const stats = {
+    exercisesCompleted: 0,
+    exercisesPlanned: session.exercises.length,
+    setsCompleted: 0,
+    setsPlanned: 0,
+    completionPercentage: 0
+  };
+
+  session.exercises.forEach(exercise => {
+    // Count planned sets
+    if (exercise.plannedSets) {
+      stats.setsPlanned += exercise.plannedSets;
+    } else {
+      // If no planned sets, estimate based on actual sets or default to 3
+      stats.setsPlanned += exercise.sets.length || 3;
+    }
+
+    // Count completed sets
+    const completedSets = exercise.sets.filter(set => set.completed).length;
+    stats.setsCompleted += completedSets;
+
+    // Count completed exercises (if exercise marked complete OR has at least 1 completed set)
+    if (exercise.completed || completedSets > 0) {
+      stats.exercisesCompleted++;
+    }
+  });
+
+  // Calculate hybrid completion percentage
+  // Weight: 50% exercises, 50% sets
+  const exerciseCompletion = stats.exercisesPlanned > 0
+    ? (stats.exercisesCompleted / stats.exercisesPlanned) * 100
+    : 0;
+  const setCompletion = stats.setsPlanned > 0
+    ? (stats.setsCompleted / stats.setsPlanned) * 100
+    : 0;
+
+  stats.completionPercentage = Math.round((exerciseCompletion + setCompletion) / 2);
+
+  return stats;
+}
+
+// Substitute exercise in active session
+export const substituteExercise = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const { sessionId } = req.params;
+    const { originalExerciseId, newExerciseId, newExerciseName, reason } = req.body;
+
+    const session = await WorkoutSession.findOne({
+      _id: sessionId,
+      userId,
+      completed: false
+    });
+
+    if (!session) {
+      return res.status(404).json({
+        success: false,
+        error: 'Active session not found'
+      });
+    }
+
+    // Find the original exercise
+    const originalExercise = session.exercises.find(
+      ex => ex.exerciseId === originalExerciseId
+    );
+
+    if (!originalExercise) {
+      return res.status(404).json({
+        success: false,
+        error: 'Original exercise not found in session'
+      });
+    }
+
+    // Create substitute exercise with same planned values
+    const substituteExercise = {
+      exerciseId: newExerciseId,
+      exerciseName: newExerciseName,
+      sets: [],
+      completed: false,
+      isSubstitute: true,
+      substitutedFor: {
+        exerciseId: originalExerciseId,
+        exerciseName: originalExercise.exerciseName,
+        reason: reason || 'Exercise substitution'
+      },
+      plannedSets: originalExercise.plannedSets,
+      plannedReps: originalExercise.plannedReps,
+      plannedWeight: originalExercise.plannedWeight,
+      restTime: originalExercise.restTime
+    };
+
+    // Add substitute exercise after the original
+    const originalIndex = session.exercises.indexOf(originalExercise);
+    session.exercises.splice(originalIndex + 1, 0, substituteExercise);
+
+    // Mark original as substituted (add note)
+    originalExercise.notes = `${originalExercise.notes || ''}\n[Substituted with ${newExerciseName}${reason ? ': ' + reason : ''}]`.trim();
+    originalExercise.completed = true; // Mark as "completed" to skip it
+
+    await session.save();
+
+    res.json({
+      success: true,
+      data: session,
+      message: `Exercise substituted: ${newExerciseName} will replace ${originalExercise.exerciseName}`
+    });
+  } catch (error) {
+    res.status(400).json({
+      success: false,
+      error: error.message
+    });
   }
 }

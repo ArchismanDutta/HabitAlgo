@@ -8,7 +8,7 @@ export const getSupplements = async (req, res) => {
   try {
     const { active } = req.query;
 
-    const query = { userId: req.user?._id || 'default-user' };
+    const query = { userId: req.user._id };
 
     if (active !== undefined) {
       query.isActive = active === 'true';
@@ -33,7 +33,7 @@ export const getSupplement = async (req, res) => {
   try {
     const supplement = await Supplement.findOne({
       _id: req.params.id,
-      userId: req.user?._id || 'default-user'
+      userId: req.user._id
     });
 
     if (!supplement) {
@@ -60,7 +60,7 @@ export const createSupplement = async (req, res) => {
   try {
     const supplement = await Supplement.create({
       ...req.body,
-      userId: req.user?._id || 'default-user'
+      userId: req.user._id
     });
 
     res.status(201).json({
@@ -79,7 +79,7 @@ export const createSupplement = async (req, res) => {
 export const updateSupplement = async (req, res) => {
   try {
     const supplement = await Supplement.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user?._id || 'default-user' },
+      { _id: req.params.id, userId: req.user._id },
       req.body,
       { new: true, runValidators: true }
     );
@@ -107,7 +107,7 @@ export const updateSupplement = async (req, res) => {
 export const deleteSupplement = async (req, res) => {
   try {
     const supplement = await Supplement.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user?._id || 'default-user' },
+      { _id: req.params.id, userId: req.user._id },
       { isActive: false },
       { new: true }
     );
@@ -138,7 +138,7 @@ export const logSupplement = async (req, res) => {
   try {
     const log = await SupplementLog.create({
       ...req.body,
-      userId: req.user?._id || 'default-user'
+      userId: req.user._id
     });
 
     res.status(201).json({
@@ -158,7 +158,7 @@ export const getSupplementLogs = async (req, res) => {
   try {
     const { date, startDate, endDate, supplementId } = req.query;
 
-    const query = { userId: req.user?._id || 'default-user' };
+    const query = { userId: req.user._id };
 
     if (date) {
       query.date = date;
@@ -190,7 +190,7 @@ export const getSupplementLogs = async (req, res) => {
 export const updateSupplementLog = async (req, res) => {
   try {
     const log = await SupplementLog.findOneAndUpdate(
-      { _id: req.params.id, userId: req.user?._id || 'default-user' },
+      { _id: req.params.id, userId: req.user._id },
       req.body,
       { new: true, runValidators: true }
     ).populate('supplementId', 'name type icon');
@@ -219,7 +219,7 @@ export const deleteSupplementLog = async (req, res) => {
   try {
     const log = await SupplementLog.findOneAndDelete({
       _id: req.params.id,
-      userId: req.user?._id || 'default-user'
+      userId: req.user._id
     });
 
     if (!log) {
@@ -247,7 +247,7 @@ export const getAdherenceStats = async (req, res) => {
     const { startDate, endDate } = req.query;
 
     const supplements = await Supplement.find({
-      userId: req.user?._id || 'default-user',
+      userId: req.user._id,
       isActive: true
     });
 
@@ -260,7 +260,7 @@ export const getAdherenceStats = async (req, res) => {
           30);
 
       const takenCount = await SupplementLog.countDocuments({
-        userId: req.user?._id || 'default-user',
+        userId: req.user._id,
         supplementId: supplement._id,
         taken: true,
         ...(startDate && endDate && { date: { $gte: startDate, $lte: endDate } })

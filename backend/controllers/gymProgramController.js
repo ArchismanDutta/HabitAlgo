@@ -4,7 +4,7 @@ import WorkoutProgram from '../models/WorkoutProgram.js';
 export const getPrograms = async (req, res) => {
   try {
     const { active } = req.query;
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const query = { userId };
 
@@ -31,7 +31,7 @@ export const getPrograms = async (req, res) => {
 // Get single program
 export const getProgram = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const program = await WorkoutProgram.findOne({
       _id: req.params.id,
@@ -60,7 +60,7 @@ export const getProgram = async (req, res) => {
 // Create program
 export const createProgram = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const program = await WorkoutProgram.create({
       ...req.body,
@@ -85,7 +85,7 @@ export const createProgram = async (req, res) => {
 // Update program
 export const updateProgram = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const program = await WorkoutProgram.findOneAndUpdate(
       { _id: req.params.id, userId },
@@ -115,7 +115,7 @@ export const updateProgram = async (req, res) => {
 // Delete program (soft delete)
 export const deleteProgram = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
 
     const program = await WorkoutProgram.findOneAndUpdate(
       { _id: req.params.id, userId },
@@ -145,7 +145,7 @@ export const deleteProgram = async (req, res) => {
 // Get program for today
 export const getTodayProgram = async (req, res) => {
   try {
-    const userId = req.user?._id || 'default-user'; // TODO: Replace with actual auth
+    const userId = req.user._id;
     const dayOfWeek = new Date().getDay(); // 0-6
 
     const program = await WorkoutProgram.findOne({

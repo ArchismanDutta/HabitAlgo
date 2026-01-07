@@ -98,5 +98,32 @@ export const workoutSessionService = {
       console.error('Failed to delete session:', error);
       throw error;
     }
+  },
+
+  // Substitute exercise in active session
+  async substituteExercise(
+    sessionId: string,
+    substitutionData: {
+      originalExerciseId: string;
+      newExerciseId: string;
+      newExerciseName: string;
+      reason?: string;
+    }
+  ): Promise<WorkoutSession> {
+    try {
+      const response = await api.post<GymApiResponse<WorkoutSession>>(
+        `/gym/sessions/${sessionId}/substitute-exercise`,
+        substitutionData
+      );
+
+      if (response.data.success && response.data.data) {
+        return response.data.data;
+      }
+
+      throw new Error(response.data.error || 'Failed to substitute exercise');
+    } catch (error) {
+      console.error('Failed to substitute exercise:', error);
+      throw error;
+    }
   }
 };

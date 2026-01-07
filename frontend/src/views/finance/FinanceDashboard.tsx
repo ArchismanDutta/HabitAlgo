@@ -456,7 +456,14 @@ export default function FinanceDashboard() {
         </Card>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+          <Link
+            to="/finance/debts"
+            className="p-3 sm:p-4 border rounded-lg hover:shadow-md transition-shadow text-center"
+          >
+            <CreditCard className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1 sm:mb-2 text-red-600" />
+            <p className="text-xs sm:text-sm font-medium">Debt Tracker</p>
+          </Link>
           <Link
             to="/finance/analytics"
             className="p-3 sm:p-4 border rounded-lg hover:shadow-md transition-shadow text-center"

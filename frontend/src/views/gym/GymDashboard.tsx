@@ -7,19 +7,21 @@ import { useWorkoutStore } from '@/store/useWorkoutStore';
 import { useMetricsStore } from '@/store/useMetricsStore';
 import { useSupplementStore } from '@/store/useSupplementStore';
 import Header from '@/components/layout/Header';
-import { Dumbbell, Calendar, TrendingUp, Trophy, Plus, Brain } from 'lucide-react';
+import { Dumbbell, Calendar, TrendingUp, Trophy, Plus, Brain, Activity, Play, CheckCircle, Clock } from 'lucide-react';
 import { toast } from 'sonner';
 import ProgramEditor from '@/components/gym/programs/ProgramEditor';
+import ProgramDetailsDialog from '@/components/gym/programs/ProgramDetailsDialog';
 
 export default function GymDashboard() {
   const navigate = useNavigate();
   const { todayProgram, recentSessions, fetchTodayProgram, fetchRecentSessions } = useGymStore();
-  const { startWorkout } = useWorkoutStore();
+  const { activeSession, startWorkout, fetchTodayActiveSession } = useWorkoutStore();
   const { latestMetrics, activeGoal, fetchLatestMetrics, fetchActiveGoal } = useMetricsStore();
   const { supplements, todayLogs, fetchSupplements, fetchTodayLogs, logSupplement } = useSupplementStore();
 
   const [starting, setStarting] = useState(false);
   const [showProgramEditor, setShowProgramEditor] = useState(false);
+  const [showProgramDetails, setShowProgramDetails] = useState(false);
   const today = new Date().toISOString().split('T')[0];
 
   useEffect(() => {
@@ -29,6 +31,7 @@ export default function GymDashboard() {
     fetchActiveGoal();
     fetchSupplements();
     fetchTodayLogs();
+    fetchTodayActiveSession();
   }, []);
 
   // Calculate weekly volume from recent sessions
@@ -56,6 +59,11 @@ export default function GymDashboard() {
   };
 
   const handleViewDetails = () => {
+    setShowProgramDetails(true);
+  };
+
+  const handleEditProgram = () => {
+    setShowProgramDetails(false);
     setShowProgramEditor(true);
   };
 
@@ -95,13 +103,13 @@ export default function GymDashboard() {
 
       <div className="container mx-auto px-3 xxs:px-4 sm:px-6 py-4 xxs:py-5 sm:py-6 space-y-4 xxs:space-y-5 sm:space-y-6 pb-6">
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 xxs:gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xxs:gap-4 sm:gap-6">
           <Card className="transition-all hover:shadow-lg">
             <CardContent className="pt-4 xxs:pt-5 sm:pt-6 px-3 xxs:px-4 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs xxs:text-sm text-muted-foreground truncate">Current Weight</p>
-                  <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-0.5 xxs:mt-1">{latestMetrics?.weight || '--'} <span className="text-sm xxs:text-base">kg</span></p>
+                  <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-1 xxs:mt-2">{latestMetrics?.weight || '--'} <span className="text-sm xxs:text-base">kg</span></p>
                 </div>
                 <TrendingUp className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 text-blue-500 flex-shrink-0" />
               </div>
@@ -110,10 +118,10 @@ export default function GymDashboard() {
 
           <Card className="transition-all hover:shadow-lg">
             <CardContent className="pt-4 xxs:pt-5 sm:pt-6 px-3 xxs:px-4 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs xxs:text-sm text-muted-foreground truncate">Weekly Volume</p>
-                  <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-0.5 xxs:mt-1">{Math.round(weeklyVolume).toLocaleString()} <span className="text-sm xxs:text-base">kg</span></p>
+                  <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-1 xxs:mt-2">{Math.round(weeklyVolume).toLocaleString()} <span className="text-sm xxs:text-base">kg</span></p>
                 </div>
                 <Dumbbell className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 text-orange-500 flex-shrink-0" />
               </div>
@@ -122,10 +130,10 @@ export default function GymDashboard() {
 
           <Card className="transition-all hover:shadow-lg">
             <CardContent className="pt-4 xxs:pt-5 sm:pt-6 px-3 xxs:px-4 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs xxs:text-sm text-muted-foreground truncate">Active Program</p>
-                  <p className="text-base xxs:text-lg sm:text-xl font-bold truncate mt-0.5 xxs:mt-1">{todayProgram?.name || 'None'}</p>
+                  <p className="text-base xxs:text-lg sm:text-xl font-bold truncate mt-1 xxs:mt-2">{todayProgram?.name || 'None'}</p>
                 </div>
                 <Calendar className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 text-green-500 flex-shrink-0" />
               </div>
@@ -134,10 +142,10 @@ export default function GymDashboard() {
 
           <Card className="transition-all hover:shadow-lg">
             <CardContent className="pt-4 xxs:pt-5 sm:pt-6 px-3 xxs:px-4 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
-              <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <p className="text-xs xxs:text-sm text-muted-foreground truncate">Goal Progress</p>
-                  <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-0.5 xxs:mt-1">
+                  <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-1 xxs:mt-2">
                     {activeGoal ? `${Math.round((activeGoal.currentWeight - activeGoal.startWeight) / (activeGoal.targetWeight - activeGoal.startWeight) * 100)}%` : '--'}
                   </p>
                 </div>
@@ -147,23 +155,83 @@ export default function GymDashboard() {
           </Card>
         </div>
 
-        {/* Today's Workout */}
-        {todayProgram && (
+        {/* Active Workout Progress or Today's Workout */}
+        {activeSession && activeSession.date === today ? (
+          <Card className="transition-all hover:shadow-lg border-2 border-green-500">
+            <CardHeader className="px-3 xxs:px-4 sm:px-6 py-3 xxs:py-4 sm:py-5">
+              <CardTitle className="flex items-center justify-between text-base xxs:text-lg sm:text-xl">
+                <div className="flex items-center gap-2 xxs:gap-3">
+                  <Activity className="h-5 w-5 xxs:h-6 xxs:w-6 text-green-500 flex-shrink-0 animate-pulse" />
+                  <span>Workout In Progress</span>
+                </div>
+                <span className="text-sm xxs:text-base font-bold text-green-600">
+                  {activeSession.completionStats?.completionPercentage || 0}%
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-3 xxs:px-4 sm:px-6 pb-3 xxs:pb-4 sm:pb-5">
+              <div className="space-y-3 xxs:space-y-4">
+                <div>
+                  <h3 className="text-lg xxs:text-xl sm:text-2xl font-bold text-green-600">
+                    {activeSession.programName}
+                  </h3>
+                  <div className="flex flex-wrap gap-2 xxs:gap-3 mt-2 xxs:mt-3 text-xs xxs:text-sm text-muted-foreground">
+                    <span className="flex items-center gap-1">
+                      <CheckCircle className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 flex-shrink-0" />
+                      {activeSession.completionStats?.exercisesCompleted || 0}/
+                      {activeSession.completionStats?.exercisesPlanned || 0} exercises
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <CheckCircle className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 flex-shrink-0" />
+                      {activeSession.completionStats?.setsCompleted || 0}/
+                      {activeSession.completionStats?.setsPlanned || 0} sets
+                    </span>
+                    {activeSession.startTime && (
+                      <span className="flex items-center gap-1">
+                        <Clock className="h-3.5 w-3.5 xxs:h-4 xxs:w-4 flex-shrink-0" />
+                        {Math.round((new Date().getTime() - new Date(activeSession.startTime).getTime()) / 60000)} min
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Progress Bar */}
+                <div className="space-y-1.5 xxs:space-y-2">
+                  <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 xxs:h-2.5">
+                    <div
+                      className="bg-green-500 h-2 xxs:h-2.5 rounded-full transition-all"
+                      style={{ width: `${activeSession.completionStats?.completionPercentage || 0}%` }}
+                    />
+                  </div>
+                </div>
+
+                {/* Continue Button */}
+                <Button
+                  onClick={() => navigate('/gym/active-workout')}
+                  className="w-full h-11 xxs:h-12 sm:h-14 text-base xxs:text-lg font-semibold transition-all hover:scale-105 active:scale-95 bg-green-600 hover:bg-green-700"
+                >
+                  <Play className="h-5 w-5 mr-2 flex-shrink-0" />
+                  Continue Workout
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ) : todayProgram ? (
           <Card className="transition-all hover:shadow-lg">
-            <CardHeader className="px-4 xxs:px-5 sm:px-6 py-4 xxs:py-5 sm:py-6">
-              <CardTitle className="flex items-center gap-2 text-base xxs:text-lg sm:text-xl">
-                <Dumbbell className="h-4 w-4 xxs:h-5 xxs:w-5" />
+            <CardHeader className="px-3 xxs:px-4 sm:px-6 py-3 xxs:py-4 sm:py-5">
+              <CardTitle className="flex items-center gap-2 xxs:gap-3 text-base xxs:text-lg sm:text-xl">
+                <Dumbbell className="h-5 w-5 xxs:h-6 xxs:w-6 flex-shrink-0" />
                 Today's Workout
               </CardTitle>
             </CardHeader>
-            <CardContent className="px-4 xxs:px-5 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
+            <CardContent className="px-3 xxs:px-4 sm:px-6 pb-3 xxs:pb-4 sm:pb-5">
               <div className="space-y-3 xxs:space-y-4">
                 <div>
                   <h3 className="text-lg xxs:text-xl sm:text-2xl font-bold" style={{ color: todayProgram.color }}>
                     {todayProgram.icon} {todayProgram.name}
                   </h3>
                   {todayProgram.description && (
-                    <p className="text-xs xxs:text-sm text-muted-foreground mt-1 xxs:mt-2">{todayProgram.description}</p>
+                    <p className="text-xs xxs:text-sm text-muted-foreground mt-1.5 xxs:mt-2">{todayProgram.description}</p>
                   )}
                   <p className="text-xs xxs:text-sm text-muted-foreground mt-1.5 xxs:mt-2">
                     {todayProgram.exercises.length} exercises
@@ -174,14 +242,14 @@ export default function GymDashboard() {
                   <Button
                     onClick={handleStartWorkout}
                     disabled={starting}
-                    className="flex-1 h-10 xxs:h-11 text-sm xxs:text-base transition-all hover:scale-105 active:scale-95"
+                    className="flex-1 h-11 xxs:h-12 sm:h-14 text-base xxs:text-lg font-semibold transition-all hover:scale-105 active:scale-95"
                   >
                     {starting ? 'Starting...' : 'Start Workout'}
                   </Button>
                   <Button
                     variant="outline"
                     onClick={handleViewDetails}
-                    className="h-10 xxs:h-11 text-sm xxs:text-base transition-all hover:scale-105 active:scale-95"
+                    className="h-11 xxs:h-12 sm:h-14 text-sm xxs:text-base transition-all hover:scale-105 active:scale-95"
                   >
                     View Details
                   </Button>
@@ -189,7 +257,7 @@ export default function GymDashboard() {
               </div>
             </CardContent>
           </Card>
-        )}
+        ) : null}
 
         {/* No Workout Today */}
         {!todayProgram && (
@@ -239,18 +307,18 @@ export default function GymDashboard() {
                   {supplements.filter(s => s.isActive).map(supplement => (
                     <div key={supplement._id} className="flex items-center justify-between p-2.5 xxs:p-3 sm:p-4 border rounded-lg transition-all hover:shadow-md">
                       <div className="flex items-center gap-2 xxs:gap-3 min-w-0 flex-1">
-                        <span className="text-xl xxs:text-2xl flex-shrink-0">{supplement.icon}</span>
+                        <span className="text-base xxs:text-lg sm:text-xl flex-shrink-0">{supplement.icon}</span>
                         <div className="min-w-0">
                           <p className="font-medium text-sm xxs:text-base truncate">{supplement.name}</p>
                           <p className="text-[10px] xxs:text-xs text-muted-foreground truncate">{supplement.dosage}</p>
                         </div>
                       </div>
-                      <div className="flex gap-0.5 xxs:gap-1 flex-shrink-0">
+                      <div className="flex gap-1 xxs:gap-1.5 flex-shrink-0">
                         {supplement.timing.map(timing => (
                           <button
                             key={timing}
                             onClick={() => handleSupplementToggle(supplement._id)}
-                            className={`px-1.5 xxs:px-2 py-1 text-[10px] xxs:text-xs rounded transition-all hover:scale-105 active:scale-95 min-h-[28px] ${
+                            className={`px-1.5 xxs:px-2 py-1 text-[10px] xxs:text-xs rounded transition-all hover:scale-105 active:scale-95 min-h-[44px] sm:min-h-[40px] ${
                               isSupplementTaken(supplement._id, timing)
                                 ? 'bg-green-500 text-white'
                                 : 'bg-gray-200 dark:bg-gray-700'
@@ -306,44 +374,48 @@ export default function GymDashboard() {
         </div>
 
         {/* Quick Links */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 xxs:gap-3 sm:gap-4">
-          <Button variant="outline" className="h-16 xxs:h-20 sm:h-24 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 xxs:gap-4 sm:gap-6">
+          <Button variant="outline" className="h-20 xxs:h-24 sm:h-28 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
             <Link to="/gym/calendar" className="flex flex-col gap-1.5 xxs:gap-2">
-              <Calendar className="h-5 w-5 xxs:h-6 xxs:w-6 sm:h-7 sm:w-7" />
+              <Calendar className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 flex-shrink-0" />
               <span className="text-xs xxs:text-sm sm:text-base font-medium">Calendar</span>
             </Link>
           </Button>
-          <Button variant="outline" className="h-16 xxs:h-20 sm:h-24 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
+          <Button variant="outline" className="h-20 xxs:h-24 sm:h-28 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
             <Link to="/gym/programs" className="flex flex-col gap-1.5 xxs:gap-2">
-              <Dumbbell className="h-5 w-5 xxs:h-6 xxs:w-6 sm:h-7 sm:w-7" />
+              <Dumbbell className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 flex-shrink-0" />
               <span className="text-xs xxs:text-sm sm:text-base font-medium">Programs</span>
             </Link>
           </Button>
-          <Button variant="outline" className="h-16 xxs:h-20 sm:h-24 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
+          <Button variant="outline" className="h-20 xxs:h-24 sm:h-28 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
             <Link to="/gym/exercises" className="flex flex-col gap-1.5 xxs:gap-2">
-              <Trophy className="h-5 w-5 xxs:h-6 xxs:w-6 sm:h-7 sm:w-7" />
+              <Trophy className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 flex-shrink-0" />
               <span className="text-xs xxs:text-sm sm:text-base font-medium">Exercises</span>
             </Link>
           </Button>
-          <Button variant="outline" className="h-16 xxs:h-20 sm:h-24 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
-            <Link to="/gym/metrics" className="flex flex-col gap-1.5 xxs:gap-2">
-              <TrendingUp className="h-5 w-5 xxs:h-6 xxs:w-6 sm:h-7 sm:w-7" />
-              <span className="text-xs xxs:text-sm sm:text-base font-medium">Metrics</span>
-            </Link>
-          </Button>
-          <Button variant="outline" className="h-16 xxs:h-20 sm:h-24 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
+          <Button variant="outline" className="h-20 xxs:h-24 sm:h-28 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
             <Link to="/gym/analytics" className="flex flex-col gap-1.5 xxs:gap-2">
-              <TrendingUp className="h-5 w-5 xxs:h-6 xxs:w-6 sm:h-7 sm:w-7" />
+              <TrendingUp className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 flex-shrink-0" />
               <span className="text-xs xxs:text-sm sm:text-base font-medium">Analytics</span>
             </Link>
           </Button>
-          <Button variant="outline" className="h-16 xxs:h-20 sm:h-24 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
-            <Link to="/gym/correlations" className="flex flex-col gap-1.5 xxs:gap-2">
-              <Brain className="h-5 w-5 xxs:h-6 xxs:w-6 sm:h-7 sm:w-7" />
-              <span className="text-xs xxs:text-sm sm:text-base font-medium">Insights</span>
+          <Button variant="outline" className="h-20 xxs:h-24 sm:h-28 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
+            <Link to="/gym/health-reports" className="flex flex-col gap-1.5 xxs:gap-2">
+              <Activity className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 flex-shrink-0" />
+              <span className="text-xs xxs:text-sm sm:text-base font-medium">Health</span>
             </Link>
           </Button>
         </div>
+
+        {/* Program Details Modal */}
+        {todayProgram && (
+          <ProgramDetailsDialog
+            program={todayProgram}
+            open={showProgramDetails}
+            onOpenChange={setShowProgramDetails}
+            onEdit={handleEditProgram}
+          />
+        )}
 
         {/* Program Editor Modal */}
         {todayProgram && (

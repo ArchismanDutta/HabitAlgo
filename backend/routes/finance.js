@@ -64,6 +64,21 @@ import {
   getGoalStats
 } from '../controllers/goalController.js';
 
+import {
+  createDebt,
+  getDebts,
+  getDebt,
+  updateDebt,
+  deleteDebt,
+  recordPayment,
+  getPayments,
+  deletePayment,
+  getDebtSummary,
+  getDebtBreakdown,
+  getPayoffProgress,
+  getDebtProjection
+} from '../controllers/debtController.js';
+
 const router = express.Router();
 
 // All routes are protected
@@ -164,5 +179,30 @@ router.route('/goals/:id')
   .delete(protect, deleteGoal);
 
 router.post('/goals/:id/contribute', protect, addContribution);
+
+// ============================================
+// DEBT ROUTES
+// ============================================
+router.route('/debts')
+  .get(getDebts)
+  .post(createDebt);
+
+router.get('/debts/summary', getDebtSummary);
+router.get('/debts/breakdown', getDebtBreakdown);
+router.get('/debts/payoff-progress', getPayoffProgress);
+
+router.route('/debts/:id')
+  .get(getDebt)
+  .put(updateDebt)
+  .delete(deleteDebt);
+
+router.get('/debts/:id/projection', getDebtProjection);
+
+// Debt Payments
+router.route('/debts/:id/payments')
+  .get(getPayments)
+  .post(recordPayment);
+
+router.delete('/debts/:id/payments/:paymentId', deletePayment);
 
 export default router;

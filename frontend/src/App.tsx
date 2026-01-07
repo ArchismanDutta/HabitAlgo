@@ -32,6 +32,7 @@ import SupplementsView from './views/gym/SupplementsView';
 import GymAnalyticsView from './views/gym/GymAnalyticsView';
 import GymCalendarView from './views/gym/GymCalendarView';
 import CorrelationsView from './views/gym/CorrelationsView';
+import HealthReportsView from './views/gym/HealthReportsView';
 
 // Finance Views
 import FinanceDashboard from './views/finance/FinanceDashboard';
@@ -42,6 +43,7 @@ import FinanceCalendarView from './views/finance/FinanceCalendarView';
 import FinanceAnalyticsView from './views/finance/FinanceAnalyticsView';
 import FinanceCorrelationView from './views/finance/FinanceCorrelationView';
 import FinancialGoalsView from './views/finance/FinancialGoalsView';
+import DebtDashboardView from './views/finance/DebtDashboardView';
 
 // Motivational Components
 import MissedHabitsChecker from './components/motivational/MissedHabitsChecker';
@@ -108,6 +110,7 @@ function App() {
           <Route path="/gym/supplements" element={<ProtectedRoute><SupplementsView /></ProtectedRoute>} />
           <Route path="/gym/analytics" element={<ProtectedRoute><GymAnalyticsView /></ProtectedRoute>} />
           <Route path="/gym/correlations" element={<ProtectedRoute><CorrelationsView /></ProtectedRoute>} />
+          <Route path="/gym/health-reports" element={<ProtectedRoute><HealthReportsView /></ProtectedRoute>} />
 
           {/* Finance Routes */}
           <Route path="/finance" element={<ProtectedRoute><FinanceDashboard /></ProtectedRoute>} />
@@ -115,6 +118,7 @@ function App() {
           <Route path="/finance/transactions" element={<ProtectedRoute><TransactionsView /></ProtectedRoute>} />
           <Route path="/finance/budgets" element={<ProtectedRoute><BudgetsView /></ProtectedRoute>} />
           <Route path="/finance/goals" element={<ProtectedRoute><FinancialGoalsView /></ProtectedRoute>} />
+          <Route path="/finance/debts" element={<ProtectedRoute><DebtDashboardView /></ProtectedRoute>} />
           <Route path="/finance/calendar" element={<ProtectedRoute><FinanceCalendarView /></ProtectedRoute>} />
           <Route path="/finance/analytics" element={<ProtectedRoute><FinanceAnalyticsView /></ProtectedRoute>} />
           <Route path="/finance/correlations" element={<ProtectedRoute><FinanceCorrelationView /></ProtectedRoute>} />
