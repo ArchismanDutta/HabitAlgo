@@ -7,7 +7,7 @@ import { useWorkoutStore } from '@/store/useWorkoutStore';
 import { useMetricsStore } from '@/store/useMetricsStore';
 import { useSupplementStore } from '@/store/useSupplementStore';
 import Header from '@/components/layout/Header';
-import { Dumbbell, Calendar, TrendingUp, Trophy, Plus, Activity, Play, CheckCircle, Clock } from 'lucide-react';
+import { Dumbbell, Calendar, Trophy, Plus, Activity, Play, CheckCircle, Clock, Scale } from 'lucide-react';
 import { toast } from 'sonner';
 import ProgramEditor from '@/components/gym/programs/ProgramEditor';
 import ProgramDetailsDialog from '@/components/gym/programs/ProgramDetailsDialog';
@@ -104,17 +104,19 @@ export default function GymDashboard() {
       <div className="container mx-auto px-3 xxs:px-4 sm:px-6 py-4 xxs:py-5 sm:py-6 space-y-4 xxs:space-y-5 sm:space-y-6 pb-6">
         {/* Quick Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 xxs:gap-4 sm:gap-6">
-          <Card className="transition-all hover:shadow-lg">
-            <CardContent className="pt-4 xxs:pt-5 sm:pt-6 px-3 xxs:px-4 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs xxs:text-sm text-muted-foreground truncate">Current Weight</p>
-                  <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-1 xxs:mt-2">{latestMetrics?.weight || '--'} <span className="text-sm xxs:text-base">kg</span></p>
+          <Link to="/gym/metrics" className="block">
+            <Card className="transition-all hover:shadow-lg cursor-pointer h-full">
+              <CardContent className="pt-4 xxs:pt-5 sm:pt-6 px-3 xxs:px-4 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs xxs:text-sm text-muted-foreground truncate">Current Weight</p>
+                    <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-1 xxs:mt-2">{latestMetrics?.weight || '--'} <span className="text-sm xxs:text-base">kg</span></p>
+                  </div>
+                  <Scale className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 text-blue-500 flex-shrink-0" />
                 </div>
-                <TrendingUp className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 text-blue-500 flex-shrink-0" />
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
 
           <Card className="transition-all hover:shadow-lg">
             <CardContent className="pt-4 xxs:pt-5 sm:pt-6 px-3 xxs:px-4 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
@@ -140,19 +142,21 @@ export default function GymDashboard() {
             </CardContent>
           </Card>
 
-          <Card className="transition-all hover:shadow-lg">
-            <CardContent className="pt-4 xxs:pt-5 sm:pt-6 px-3 xxs:px-4 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
-              <div className="flex items-center justify-between gap-3">
-                <div className="min-w-0 flex-1">
-                  <p className="text-xs xxs:text-sm text-muted-foreground truncate">Goal Progress</p>
-                  <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-1 xxs:mt-2">
-                    {activeGoal ? `${Math.round((activeGoal.currentWeight - activeGoal.startWeight) / (activeGoal.targetWeight - activeGoal.startWeight) * 100)}%` : '--'}
-                  </p>
+          <Link to="/gym/metrics" className="block">
+            <Card className="transition-all hover:shadow-lg cursor-pointer h-full">
+              <CardContent className="pt-4 xxs:pt-5 sm:pt-6 px-3 xxs:px-4 sm:px-6 pb-4 xxs:pb-5 sm:pb-6">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs xxs:text-sm text-muted-foreground truncate">Goal Progress</p>
+                    <p className="text-xl xxs:text-2xl sm:text-3xl font-bold mt-1 xxs:mt-2">
+                      {activeGoal ? `${Math.round((activeGoal.currentWeight - activeGoal.startWeight) / (activeGoal.targetWeight - activeGoal.startWeight) * 100)}%` : '--'}
+                    </p>
+                  </div>
+                  <Trophy className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 text-yellow-500 flex-shrink-0" />
                 </div>
-                <Trophy className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 text-yellow-500 flex-shrink-0" />
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         {/* Active Workout Progress or Today's Workout */}
@@ -394,9 +398,9 @@ export default function GymDashboard() {
             </Link>
           </Button>
           <Button variant="outline" className="h-20 xxs:h-24 sm:h-28 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
-            <Link to="/gym/analytics" className="flex flex-col gap-1.5 xxs:gap-2">
-              <TrendingUp className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 flex-shrink-0" />
-              <span className="text-xs xxs:text-sm sm:text-base font-medium">Analytics</span>
+            <Link to="/gym/metrics" className="flex flex-col gap-1.5 xxs:gap-2">
+              <Scale className="h-6 w-6 xxs:h-7 xxs:w-7 sm:h-8 sm:w-8 flex-shrink-0" />
+              <span className="text-xs xxs:text-sm sm:text-base font-medium">Metrics</span>
             </Link>
           </Button>
           <Button variant="outline" className="h-20 xxs:h-24 sm:h-28 transition-all hover:scale-105 hover:shadow-md active:scale-95" asChild>
