@@ -45,8 +45,18 @@ export const useAuthStore = create<AuthState>()(
             loading: false
           });
         } catch (error: any) {
+          let errorMessage = 'Registration failed';
+
+          if (error.code === 'ECONNABORTED') {
+            errorMessage = 'Server is starting up. Please wait a moment and try again.';
+          } else if (error.message === 'Network Error' || !error.response) {
+            errorMessage = 'Unable to connect to server. Please check your internet connection.';
+          } else {
+            errorMessage = error.response?.data?.error || error.response?.data?.message || 'Registration failed';
+          }
+
           set({
-            error: error.response?.data?.error || 'Registration failed',
+            error: errorMessage,
             loading: false
           });
           throw error;
@@ -85,8 +95,18 @@ export const useAuthStore = create<AuthState>()(
             loading: false
           });
         } catch (error: any) {
+          let errorMessage = 'Login failed';
+
+          if (error.code === 'ECONNABORTED') {
+            errorMessage = 'Server is starting up. Please wait a moment and try again.';
+          } else if (error.message === 'Network Error' || !error.response) {
+            errorMessage = 'Unable to connect to server. Please check your internet connection.';
+          } else {
+            errorMessage = error.response?.data?.error || error.response?.data?.message || 'Login failed';
+          }
+
           set({
-            error: error.response?.data?.error || 'Login failed',
+            error: errorMessage,
             loading: false
           });
           throw error;

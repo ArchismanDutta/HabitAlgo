@@ -94,5 +94,47 @@ api.interceptors.response.use(
   }
 );
 
+// ============================================
+// SERVER WARMUP UTILITY
+// ============================================
+
+/**
+ * Pings the server health endpoint to wake it from cold start
+ * Useful before critical operations like registration/login
+ */
+let warmupPromise: Promise<void> | null = null;
+let lastWarmupTime = 0;
+const WARMUP_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+export const warmupServer = async (): Promise<void> => {
+  const now = Date.now();
+
+  // If recently warmed up, skip
+  if (now - lastWarmupTime < WARMUP_CACHE_DURATION) {
+    return;
+  }
+
+  // If warmup in progress, return existing promise
+  if (warmupPromise) {
+    return warmupPromise;
+  }
+
+  warmupPromise = (async () => {
+    try {
+      const healthUrl = API_BASE_URL.replace('/api/v1', '/health');
+      await axios.get(healthUrl, { timeout: 45000 });
+      lastWarmupTime = Date.now();
+      console.log('Server warmed up successfully');
+    } catch (error) {
+      console.warn('Server warmup failed (non-critical):', error);
+      // Don't throw - warmup is best-effort
+    } finally {
+      warmupPromise = null;
+    }
+  })();
+
+  return warmupPromise;
+};
+
 // ✅ THIS LINE FIXES EVERYTHING
 export default api;

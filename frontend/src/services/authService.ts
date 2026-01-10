@@ -1,4 +1,4 @@
-import { api } from '@/lib/api';
+import { api, warmupServer } from '@/lib/api';
 
 export interface User {
   id: string;
@@ -38,12 +38,16 @@ export interface ChangePasswordData {
 export const authService = {
   // Register new user
   async register(data: RegisterData): Promise<AuthResponse> {
+    // Warm up server to prevent cold start delays
+    await warmupServer();
     const response = await api.post('/auth/register', data);
     return response.data;
   },
 
   // Login user
   async login(data: LoginData): Promise<AuthResponse> {
+    // Warm up server to prevent cold start delays
+    await warmupServer();
     const response = await api.post('/auth/login', data);
     return response.data;
   },
